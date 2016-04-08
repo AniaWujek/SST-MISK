@@ -1,0 +1,12 @@
+
+- środowisko v-rep + python z n robotami, które się mogą komunikować
+  - odpytywanie o lokalizację (w jakikolwiek sposób na razie)
+  - możliwośc odczytywania stanu czujników odległości
+  - sterowanie silnikami
+- komunikacja między robotami - WIKTOR
+- chmura skażenia tak żeby dało się ją ładnie czujnikami znaleźć
+  - pomysł: osobno wizualizować, osobno symulować w pythonie
+  - pomysł2: spytać Karpowicza jak to zrobić
+- algorytm omijania przeszkód
+- algorytm ustawiania robotów wokół chmury
+- algorytm samoorganizacji sieci
