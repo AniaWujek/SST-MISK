@@ -14,8 +14,9 @@ class ProximitySensor(Sensor):
 
     result = namedtuple("ProximityData", ["state", "point", "handle", "normal"])
 
-    def __init__(self, simulation, name, type="proximity"):
-        super(ProximitySensor, self).__init__(simulation, name, type)
+    def __init__(self, name, simulation):
+        super(ProximitySensor, self).__init__(name, simulation,
+            type="proximity")
         self._reader = self.reader()
 
     @property

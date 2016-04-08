@@ -20,7 +20,7 @@ class Robot:
         self.sensors = dict()
         self.motors = dict()
 
-    def add_sensor(self, name, sensor_type, key=None):
+    def add_sensor(self, name, sensor_type, key=None, *args, **kwargs):
         """
         Add sensor with given name to robot's sensors.
 
@@ -35,7 +35,7 @@ class Robot:
         if key is None:
             key = name
 
-        sensor = Sensor.create(simulation=self.sim, type=sensor_type, name=name)
+        sensor = Sensor.create(simulation=self.sim, typ=sensor_type, name=name, *args, **kwargs)
         self.sensors[key] = sensor
 
     @property

@@ -4,21 +4,14 @@ remote and control effector.
 """
 
 from .vrep import vrep
+from .component import Component
 
-
-class Joint:
+class Joint(Component):
     """
     Generic motor representation, providing interface to control single joint.
     """
     def __init__(self, simulation, name):
-        ret, handle = vrep.simxGetObjectHandle(simulation.client_id, name,
-            vrep.simx_opmode_blocking)
-
-        if ret != 0:
-            raise Exception("Error code when accesing sensor: error {e}".format(e=ret))
-
-        self.handle = handle
-        self.sim = simulation
+        super(Joint, self).__init__(simulation, name)
         self.name = name
         self._position = 0
 
@@ -33,7 +26,7 @@ class Joint:
         self._position = value
 
 
-class Motor(Joint):
+class Motor(Component):
     """
     Joint extension used to set target velocity.
     """
@@ -44,14 +37,6 @@ class Motor(Joint):
         self._position = None
 
     @property
-    def position(self):
-        return None
-
-    @position.setter
-    def position(self, value):
-        pass
-
-    @property
     def velocity(self):
         return _velocity
 
@@ -59,4 +44,5 @@ class Motor(Joint):
     def velocity(self, value):
         ret = vrep.simxSetJointTargetVelocity(self.sim.client_id, self.handle, value,
             vrep.simx_opmode_oneshot)
+        print(ret)
         self._position = value
