@@ -37,16 +37,15 @@
 	\sloppy
 	\maketitle
 	\section{Zadanie}
-	Celem projektu jest projekt oraz implementacja symulatora mobilnej sieci ad hoc (MANET) do monitorowania skażenia środowiska naturalnego. Węzłami sieci będą roboty mobilne, wyposażone w czujniki oraz komunikujące się między sobą. Zadaniem robotów będzie lokalizacja chmury skażenia i otoczenie jej robotami, monitorującymi jej położenie i granice, przy założeniu utrzymania spójności sieci.
+	Celem zadania jest stworzenie projekt oraz implementacji symulatora mobilnej sieci ad hoc (MANET) do monitorowania skażenia środowiska naturalnego. Węzłami sieci będą wyposażone w czujniki, komunikujące się między sobą roboty mobilne. Zadaniem sieci będzie lokalizacja chmury skażenia i otoczenie jej robotami, monitorującymi jej położenie i granice, przy założeniu utrzymania spójności.
 	
 	\subsection{Założenia}
 	\begin{itemize}
 		\item Roboty potrafią się na bieżąco lokalizować.
 		\item System składa się z pewnej liczby robotów mobilnych oraz jednostki centralnej odbierającej od robotów dane o skażeniu.
 		\item Roboty mobilne działają autonomicznie i potrafią same zorganizować sieć.
-		\item \textcolor{red}{Roboty mogą się między sobą komunikować z pewnymi ograniczeniami (odległość, przeszkody).}
 		\item Roboty są wyposażone w czujniki pozwalające im wykrywać poziom skażenia oraz przeszkody.
-		\item Roboty są wyposażone w urządzenia pozwalające im się między sobą komunikować.
+		\item Roboty są wyposażone w urządzenia pozwalające im na komunikację z pozostałymi robotami.
 	\end{itemize}
 	
 	\subsection{Scenariusz działania}
@@ -58,7 +57,7 @@
 		
 	
 	\subsection{Narzędzia}
-	Wykorzystany zostanie symulator V-rep w połączeniu z językiem skryptowym python. V-rep posłuży jako symulator przestrzeni roboczej oraz robotów i ich czujników, natomiast w języku python zaimplementowana zostanie jednostka centralna oraz logika robotów.
+	Wykorzystany zostanie symulator V-rep w połączeniu z językiem skryptowym Python. V-rep posłuży jako symulator środowiska oraz robotów i ich czujników, natomiast w języku Python zaimplementowana zostanie jednostka centralna oraz logika robotów.
 	
 	W ramach przygotowania środowiska stworzyliśmy niewielki program do sterowania robotem z zewnętrznego skryptu, który uruchamia silnik robota i odczytuje stan czujników. 
 	
