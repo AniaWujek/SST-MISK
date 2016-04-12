@@ -16,7 +16,7 @@
 \usepackage[usenames,dvipsnames]{xcolor}
 
 %\renewcommand*{\addcontentsline}[3]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{}}}
-%\newgeometry{tmargin=2.5cm, bmargin=2.5cm, lmargin=3.5cm, rmargin=2.5cm}
+\newgeometry{tmargin=2.5cm, bmargin=2.5cm, lmargin=3.5cm, rmargin=2.5cm}
 %\setcounter{secnumdepth}{2}
 \setlength{\fboxsep}{0pt}
 \lstset{
@@ -31,7 +31,7 @@
 
 
 \author{Anna Wujek \\ Łukasz Korpal \\ Wiktor Ślęczka}
-\title{Analiza zagadnienia i przygotowanie środowiska roboczego}
+\title{Analiza zagadnienia i przygotowanie środowiska roboczego \\ {\large Roboty monitorujace skażenie środowiska - symulator V-REP}}
 
 \begin{document}
 	\sloppy
@@ -44,21 +44,19 @@
 		\item Roboty potrafią się na bieżąco lokalizować.
 		\item System składa się z pewnej liczby robotów mobilnych oraz jednostki centralnej odbierającej od robotów dane o skażeniu.
 		\item Roboty mobilne działają autonomicznie i potrafią same zorganizować sieć.
-		\item \textcolor{red}{Roboty mogą się między sobą komunikować z pewnymi ograniczeniami (odległość, przeszkody).}
 		\item Roboty są wyposażone w czujniki pozwalające im wykrywać poziom skażenia oraz przeszkody.
-		\item Roboty są wyposażone w urządzenia pozwalające im się między sobą komunikować.
+		\item Roboty są wyposażone w urządzenia pozwalające im się między sobą komunikować, z pewnymi ograniczeniami.
+		\item Chmura skażenia jest spójna, może się przemieszczać i zmieniać kształt.
 	\end{itemize}
 	
 	\subsection{Scenariusz działania}
-
-		\textbf{Wariant z samoorganizacją}
 		
 		Nieznana jest mapa przestrzeni roboczej oraz lokalizacja chmury skażenia. Roboty są autonomiczne w zakresie omijania przeszkód, a także same organizują się w sieć, a do jednostki centralnej tylko wysyłają dane o skażeniu. Ważne jest w tym przypadku dbanie o zachowanie spójności sieci, zwłaszcza podczas omijania przeszkód. Chmura może się przemieszczać oraz zmieniać kształt w trakcie zadania. Roboty poszukują granic chmury oraz starają się ją całkowicie otoczyć.
 		
 		
 	
 	\subsection{Narzędzia}
-	Wykorzystany zostanie symulator V-rep w połączeniu z językiem skryptowym python. V-rep posłuży jako symulator przestrzeni roboczej oraz robotów i ich czujników, natomiast w języku python zaimplementowana zostanie jednostka centralna oraz logika robotów.
+	Wykorzystany zostanie symulator V-rep w połączeniu z językiem skryptowym python. V-rep posłuży jako symulator przestrzeni roboczej oraz robotów i ich czujników, natomiast w języku Python zaimplementowana zostanie jednostka centralna oraz logika robotów.
 	
 	W ramach przygotowania środowiska stworzyliśmy niewielki program do sterowania robotem z zewnętrznego skryptu, który uruchamia silnik robota i odczytuje stan czujników. 
 	
@@ -67,6 +65,21 @@
 	\frame{\includegraphics[width=0.7\columnwidth]{img/chmura.jpg}}
 	\caption{Przykładowy sposób otoczenia chmury skażenia przez roboty.}
 	\end{figure}
+		
+	\clearpage
+	\subsection{Wstępny projekt systemu}	
+	\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\columnwidth]{img/schemat_sst_1.pdf}
+	\caption{Schemat działania systemu.}
+	\end{figure}
+	Dla robotów, jednostki centralnej oraz chmury stworzone zostaną procesy, które będą się komunikować z symulatorem V-rep:
+	\begin{itemize}
+		\item procesy robotów będą wysyłać sterowania i odbierać odczyty z czujników przeszkód z symulatora V-rep (V-rep będzie symulować rzeczywiste roboty i rzeczywiste środowisko);
+		\item możliwa będzie komunikacja pomiędzy robotami;
+		\item jednostka centralna będzie odbierać od robotów odczyty skażenia;
+		\item stworzony zostanie osobny proces, który będzie symulował chmurę skażenia; proces ten symulował będzie wartości odczytów czujników skażenia i przekazywał informacje o kształcie i położeniu chmury do V-repa.
+	\end{itemize}
 	
 
 
