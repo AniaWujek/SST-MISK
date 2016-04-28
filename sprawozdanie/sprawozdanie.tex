@@ -96,7 +96,7 @@ Dodatkowo, czujniki stężenia toksycznych substancji będą realizowane w skryp
 	Gdzie:\\
 	$d_{max}$ -- maksymalna odległość między robotami\\
 	$z_1$ -- zasięg urządzeń komunikacyjnych robotów\\
-	$z_2$ -- zasięg czujnika substancji toksycznych\\
+	$z_2$ -- zasięg czujników odległości\\
 	Roboty w ten sposób zaczynają poruszać się do przodu do momentu dotarcia do przeszkody, toksycznej chmury lub granicy obszaru poszukiwań. W przypadku powyższych wydarzeń, uruchamiane są odpowiednie algorytmy.
 	Gdy roboty dotrą do końca obszaru poszukiwań, zatrzymują się, przesuwają w bok i kontynuują poszukiwania w drugą stronę, granicząc z poprzednim obszarem poszukiwań.
 \subsubsection{Algorytm bug 2}
@@ -108,14 +108,25 @@ Dodatkowo, czujniki stężenia toksycznych substancji będą realizowane w skryp
 	\label{bug2_img}
 	\end{figure}
 	W zastosowaniu dla grupy robotów zmodyfikujemy ten algorytm w następujący sposób:
-	Gdy robot/roboty wykryją przeszkodę, oceniane jest jej położenie względem środka szeregu. Większość szeregu powinna poruszać się dalej, natomiast pozostałe roboty powinny zacząć omijać przeszkodę w kierunku większości za pomocą algorytmu bug 2, nie przerywając połączenia z siecią.
+	Gdy robot/roboty wykryją przeszkodę, oceniane jest jej położenie względem środka szeregu. Większość szeregu powinna poruszać się dalej, natomiast pozostałe roboty powinny zacząć omijać przeszkodę w kierunku większości za pomocą algorytmu bug 2, nie przerywając połączenia z siecią. Jego działanie zaprezentowano na rysunku \ref{omijanie}
 	\begin{figure}[h!]
 		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/1.png}
 		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/2.png}
 		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/3.png}
+		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/4.png}
 		\caption{Działanie algorytmu bug 2 dla wielu robotów}
 		\label{omijanie}
 	\end{figure}
+	\subsubsection{Algorytm otaczania chmury}
+	W momencie napotkania chmury przez któregokolwiek robota, zatrzymuje się on (po osiągnięciu natężenia toksyn określonego programowo). Pozostałe roboty jadą dalej, po łuku -- tak, aby nie przerwać połączenia z siecią. Gdy napotkają określone stężenie chmury, zatrzymują się. Gdy wszystkie roboty zatrzymały się, zwracają się w jedną stronę i zaczynają okrążać chmurę, utrzymując się na granicy stężenia oraz zachowując spójność sieci.
+		\begin{figure}[h!]
+			\includegraphics*[width=0.5\columnwidth]{img/chmura/1.png}
+			\includegraphics*[width=0.5\columnwidth]{img/chmura/2.png}
+			\includegraphics*[width=0.5\columnwidth]{img/chmura/3.png}
+			\includegraphics*[width=0.5\columnwidth]{img/chmura/4.png}
+			\caption{Działanie algorytmu bug 2 dla wielu robotów}
+			\label{otaczanie}
+		\end{figure}
 \end{document}
 
 
