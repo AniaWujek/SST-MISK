@@ -88,7 +88,34 @@ Wykorzystywane w realizacji zadania roboty Pionieer p3dx wyposażone w ultradźw
 Dodatkowo, czujniki stężenia toksycznych substancji będą realizowane w skryptach Pythona, ułatwiając jej symulację. Informacje o jej położeniu i kształcie będą przekazywane do Vrepa, gdzie nastąpi ich wizualizacja.
 \subsection{Algorytmy}
 
-	
+\subsubsection{Algorytm poszukiwania chmury}
+	Roboty rozpoczynają pracę od ustawienia się w formacji linii -- maksymalna odległość między robotami jest określona wzorem:
+	\begin{math}
+	d_{max} = 0.7*min(max(z_1,2*z_2))
+	\end{math}
+	Gdzie:\\
+	$d_{max}$ -- maksymalna odległość między robotami\\
+	$z_1$ -- zasięg urządzeń komunikacyjnych robotów\\
+	$z_2$ -- zasięg czujnika substancji toksycznych\\
+	Roboty w ten sposób zaczynają poruszać się do przodu do momentu dotarcia do przeszkody, toksycznej chmury lub granicy obszaru poszukiwań. W przypadku powyższych wydarzeń, uruchamiane są odpowiednie algorytmy.
+	Gdy roboty dotrą do końca obszaru poszukiwań, zatrzymują się, przesuwają w bok i kontynuują poszukiwania w drugą stronę, granicząc z poprzednim obszarem poszukiwań.
+\subsubsection{Algorytm bug 2}
+	Algorytm ten będzie stosowany w przypadku napotkania przeszkody przez robota. Polega on na podążaniu wzdłuż ściany przeszkody do momentu osiągnięcia punktu leżącego za napotkaną ścianą, na przedłużeniu początkowej ścieżki ruchu. Jego działanie zostało przedstawione na rysunku \ref{bug2_img}.
+	\begin{figure}[h!]
+	\centering
+	\includegraphics*[width=0.7\columnwidth]{img/40-0.png}
+	\caption{Działanie algorytmu bug 2}
+	\label{bug2_img}
+	\end{figure}
+	W zastosowaniu dla grupy robotów zmodyfikujemy ten algorytm w następujący sposób:
+	Gdy robot/roboty wykryją przeszkodę, oceniane jest jej położenie względem środka szeregu. Większość szeregu powinna poruszać się dalej, natomiast pozostałe roboty powinny zacząć omijać przeszkodę w kierunku większości za pomocą algorytmu bug 2, nie przerywając połączenia z siecią.
+	\begin{figure}[h!]
+		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/1.png}
+		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/2.png}
+		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/3.png}
+		\caption{Działanie algorytmu bug 2 dla wielu robotów}
+		\label{omijanie}
+	\end{figure}
 \end{document}
 
 
