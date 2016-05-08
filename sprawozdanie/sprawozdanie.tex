@@ -4,6 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[polish]{babel}
 \usepackage{polski}
+\usepackage{float}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{amsfonts}
@@ -61,17 +62,17 @@
 	W ramach przygotowania środowiska stworzyliśmy niewielki program do sterowania robotem z zewnętrznego skryptu, który uruchamia silnik robota i odczytuje stan czujników. 
 	
 	\begin{figure}[h!]
-	\centering
-	\frame{\includegraphics[width=0.7\columnwidth]{img/chmura.jpg}}
-	\caption{Przykładowy sposób otoczenia chmury skażenia przez roboty.}
+		\centering
+		\frame{\includegraphics[width=0.7\columnwidth]{img/chmura.jpg}}
+		\caption{Przykładowy sposób otoczenia chmury skażenia przez roboty.}
 	\end{figure}
-		
+	
 	\clearpage
 	\subsection{Wstępny projekt systemu}	
 	\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.9\columnwidth]{img/schemat_sst_1.pdf}
-	\caption{Schemat działania systemu.}
+		\centering
+		\includegraphics[width=0.9\columnwidth]{img/schemat_sst_1.pdf}
+		\caption{Schemat działania systemu.}
 	\end{figure}
 	Dla robotów, jednostki centralnej oraz chmury stworzone zostaną procesy, które będą się komunikować z symulatorem V-rep:
 	\begin{itemize}
@@ -81,14 +82,14 @@
 		\item stworzony zostanie osobny proces, który będzie symulował chmurę skażenia; proces ten symulował będzie wartości odczytów czujników skażenia i przekazywał informacje o kształcie i położeniu chmury do V-repa.
 	\end{itemize}
 	
-\section{Realizacja}
-
-\subsection{Roboty}
-Wykorzystywane w realizacji zadania roboty Pionieer p3dx wyposażone w ultradźwiękowe czujniki odległości - będą one zapewnione przez symulator V-Rep. Posiadają one napęd różnicowy, pozwalający na dużą swobodę poruszania się po symulowanej przestrzeni. Są przystosowane do rozbudowy o dodatkowe urządzenia -- dzięki czemu mogły by być łatwo dostosowane do realizacji zadania lokalizacji chmury.
-Dodatkowo, czujniki stężenia toksycznych substancji będą realizowane w skryptach Pythona, ułatwiając jej symulację. Informacje o jej położeniu i kształcie będą przekazywane do Vrepa, gdzie nastąpi ich wizualizacja.
-\subsection{Algorytmy}
-
-\subsubsection{Algorytm poszukiwania chmury}
+	\section{Realizacja}
+	
+	\subsection{Roboty}
+	Wykorzystywane w realizacji zadania roboty Pionieer p3dx wyposażone w ultradźwiękowe czujniki odległości - będą one zapewnione przez symulator V-Rep. Posiadają one napęd różnicowy, pozwalający na dużą swobodę poruszania się po symulowanej przestrzeni. Są przystosowane do rozbudowy o dodatkowe urządzenia -- dzięki czemu mogły by być łatwo dostosowane do realizacji zadania lokalizacji chmury.
+	Dodatkowo, czujniki stężenia toksycznych substancji będą realizowane w skryptach Pythona, ułatwiając jej symulację. Informacje o jej położeniu i kształcie będą przekazywane do Vrepa, gdzie nastąpi ich wizualizacja.
+	\subsection{Algorytmy}
+	
+	\subsubsection{Algorytm poszukiwania chmury}
 	Roboty rozpoczynają pracę od ustawienia się w formacji linii -- maksymalna odległość między robotami jest określona wzorem:
 	\begin{math}
 	d_{max} = 0.7*min(max(z_1,2*z_2))
@@ -99,17 +100,17 @@ Dodatkowo, czujniki stężenia toksycznych substancji będą realizowane w skryp
 	$z_2$ -- zasięg czujników odległości\\
 	Roboty w ten sposób zaczynają poruszać się do przodu do momentu dotarcia do przeszkody, toksycznej chmury lub granicy obszaru poszukiwań. W przypadku powyższych wydarzeń, uruchamiane są odpowiednie algorytmy.
 	Gdy roboty dotrą do końca obszaru poszukiwań, zatrzymują się, przesuwają w bok i kontynuują poszukiwania w drugą stronę, granicząc z poprzednim obszarem poszukiwań.
-\subsubsection{Algorytm bug 2}
+	\subsubsection{Algorytm bug 2}
 	Algorytm ten będzie stosowany w przypadku napotkania przeszkody przez robota. Polega on na podążaniu wzdłuż ściany przeszkody do momentu osiągnięcia punktu leżącego za napotkaną ścianą, na przedłużeniu początkowej ścieżki ruchu. Jego działanie zostało przedstawione na rysunku \ref{bug2_img}.
 	\begin{figure}[h!]
-	\centering
-	\includegraphics*[width=0.7\columnwidth]{img/40-0.png}
-	\caption{Działanie algorytmu bug 2}
-	\label{bug2_img}
+		\centering
+		\includegraphics*[width=0.7\columnwidth]{img/40-0.png}
+		\caption{Działanie algorytmu bug 2}
+		\label{bug2_img}
 	\end{figure}
 	W zastosowaniu dla grupy robotów zmodyfikujemy ten algorytm w następujący sposób:
 	Gdy robot/roboty wykryją przeszkodę, oceniane jest jej położenie względem środka szeregu. Większość szeregu powinna poruszać się dalej, natomiast pozostałe roboty powinny zacząć omijać przeszkodę w kierunku większości za pomocą algorytmu bug 2, nie przerywając połączenia z siecią. Jego działanie zaprezentowano na rysunku \ref{omijanie}.
-	\begin{figure}[H!]
+	\begin{figure}[h!]
 		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/1.png}
 		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/2.png}
 		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/3.png}
@@ -117,16 +118,25 @@ Dodatkowo, czujniki stężenia toksycznych substancji będą realizowane w skryp
 		\caption{Działanie algorytmu bug 2 dla wielu robotów}
 		\label{omijanie}
 	\end{figure}
+	\clearpage
 	\subsubsection{Algorytm otaczania chmury}
 	W momencie napotkania chmury przez któregokolwiek robota, zatrzymuje się on (po osiągnięciu natężenia toksyn określonego programowo). Pozostałe roboty jadą dalej, po łuku -- tak, aby nie przerwać połączenia z siecią. Gdy napotkają określone stężenie chmury, zatrzymują się. Gdy wszystkie roboty zatrzymały się, zwracają się w jedną stronę i zaczynają okrążać chmurę, utrzymując się na granicy stężenia oraz zachowując spójność sieci. Jego działanie przedstawiono na rysunku \ref{otaczanie}.
-		\begin{figure}[H!]
-			\includegraphics*[width=0.5\columnwidth]{img/chmura/1.png}
-			\includegraphics*[width=0.5\columnwidth]{img/chmura/2.png}
-			\includegraphics*[width=0.5\columnwidth]{img/chmura/3.png}
-			\includegraphics*[width=0.5\columnwidth]{img/chmura/4.png}
-			\caption{Działanie algorytmu otaczania chmury}
-			\label{otaczanie}
-		\end{figure}
+	\begin{figure}[h!]
+		\includegraphics*[width=0.5\columnwidth]{img/chmura/1.png}
+		\includegraphics*[width=0.5\columnwidth]{img/chmura/2.png}
+		\includegraphics*[width=0.5\columnwidth]{img/chmura/3.png}
+		\includegraphics*[width=0.5\columnwidth]{img/chmura/4.png}
+		\caption{Działanie algorytmu otaczania chmury}
+		\label{otaczanie}
+	\end{figure}
+	\clearpage
+	\subsection{Przykładowe mapy środowiska}
+	\begin{figure}[h!]
+		\centering
+		\subfigure[Mały teren]{\includegraphics[width=0.99\columnwidth]{img/mapa1.png}}
+		\subfigure[Duży teren]{\includegraphics[width=0.99\columnwidth]{img/mapa2.png}}
+		\caption{Przykładowe mapy środowiska}
+	\end{figure}
 \end{document}
 
 
