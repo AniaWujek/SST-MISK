@@ -42,7 +42,7 @@
 	\tableofcontents
 	\newpage
 	\section{Zadanie}
-	Celem zadania jest stworzenie projekt oraz implementacji symulatora mobilnej sieci ad hoc (MANET) do monitorowania skażenia środowiska naturalnego. Węzłami sieci będą wyposażone w czujniki, komunikujące się między sobą roboty mobilne. Zadaniem sieci będzie lokalizacja chmury skażenia i otoczenie jej robotami, monitorującymi jej położenie i granice, przy założeniu utrzymania spójności.
+	Celem projektu jest projekt oraz implementacja symulatora mobilnej sieci ad hoc (MANET) do monitorowania skażenia środowiska naturalnego. Węzłami sieci będą roboty mobilne, wyposażone w czujniki oraz komunikujące się między sobą. Zadaniem robotów będzie lokalizacja chmury skażenia i otoczenie jej robotami, monitorującymi jej położenie i granice, przy założeniu utrzymania spójności sieci.
 	
 	\subsection{Założenia}
 	\begin{itemize}
@@ -50,12 +50,8 @@
 		\item System składa się z pewnej liczby robotów mobilnych oraz jednostki centralnej odbierającej od robotów dane o skażeniu.
 		\item Roboty mobilne działają autonomicznie i potrafią same zorganizować sieć.
 		\item Roboty są wyposażone w czujniki pozwalające im wykrywać poziom skażenia oraz przeszkody.
-<<<<<<< HEAD
-		\item Roboty są wyposażone w urządzenia pozwalające im na komunikację z pozostałymi robotami.
-=======
 		\item Roboty są wyposażone w urządzenia pozwalające im się między sobą komunikować, z pewnymi ograniczeniami.
 		\item Chmura skażenia jest spójna, może się przemieszczać i zmieniać kształt.
->>>>>>> origin/master
 	\end{itemize}
 	
 	\subsection{Scenariusz działania}
@@ -65,11 +61,7 @@
 		
 	
 	\subsection{Narzędzia}
-<<<<<<< HEAD
-	Wykorzystany zostanie symulator V-rep w połączeniu z językiem skryptowym Python. V-rep posłuży jako symulator środowiska oraz robotów i ich czujników, natomiast w języku Python zaimplementowana zostanie jednostka centralna oraz logika robotów.
-=======
 	Wykorzystany zostanie symulator V-rep w połączeniu z językiem skryptowym python. V-rep posłuży jako symulator przestrzeni roboczej oraz robotów i ich czujników, natomiast w języku Python zaimplementowana zostanie jednostka centralna oraz logika robotów.
->>>>>>> origin/master
 	
 	W ramach przygotowania środowiska stworzyliśmy niewielki program do sterowania robotem z zewnętrznego skryptu, który uruchamia silnik robota i odczytuje stan czujników. 
 	
@@ -127,7 +119,7 @@
 		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/2.png}
 		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/3.png}
 		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/4.png}
-		\caption{Działanie algorytmu bug 2 dla wielu robotów}
+		\caption{Działanie algorytmu bug 2 dla wielu robotów. Ścianę napotyka jako pierwszy robot 1, robot 2 także ją zauważa. Znajduje się na lewo od środka ciężkości linii, więc roboty z tej strony zaczynają omijać przeszkodę, korzystając z algorytmu bug 2 oraz zachowując spójność sieci.}
 		\label{omijanie}
 	\end{figure}
 	\clearpage
@@ -138,7 +130,7 @@
 		\includegraphics*[width=0.5\columnwidth]{img/chmura/2.png}
 		\includegraphics*[width=0.5\columnwidth]{img/chmura/3.png}
 		\includegraphics*[width=0.5\columnwidth]{img/chmura/4.png}
-		\caption{Działanie algorytmu otaczania chmury}
+		\caption{Działanie algorytmu otaczania chmury. Robot 2 napotyka chmurę, pozostałe roboty zbliżają się do chmury aż do wartości granicznej, następnie cała sieć zaczyna krążyć wokół chmury, monitorując jej kształt i położenie.}
 		\label{otaczanie}
 	\end{figure}
 	\clearpage
