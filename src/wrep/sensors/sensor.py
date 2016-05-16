@@ -15,8 +15,8 @@ class Sensor(Component):
     measured, and thus should be used only as a base class
     for other sensors.
     """
-    def __init__(self, name, simulation, type):
-        super(Sensor, self).__init__(name, simulation)
+    def __init__(self, simulation, name, type):
+        super(Sensor, self).__init__(simulation, name)
         self.type = type
 
     @staticmethod

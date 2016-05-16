@@ -7,18 +7,19 @@ from ..vrep import vrep
 from .sensor import Sensor, sensors
 
 
-class ProximitySensor(Sensor):
+class Position(Sensor):
     """
     Ultrasonic sensor, used to detect obstacles and surfaces.
     """
 
-    result = namedtuple("ProximityData", ["state", "point", "handle", "normal"])
+    result = namedtuple("Position", ["pos"])
 
-    def __init__(self, simulation, name):
-        super(ProximitySensor, self).__init__(simulation, name,
-            type="proximity")
+    def __init__(self, simulation, name, component):
+        self.type="position"
         self._reader = self.reader()
-
+        self.component = component
+        self.sim = simulation
+        
     @property
     def read(self):
         """
@@ -32,13 +33,11 @@ class ProximitySensor(Sensor):
         Will return None until first sensor read is available, then will simply
         repeat last value until updated one will be provided.
         """
-        vrep.simxReadProximitySensor(self.sim.client_id, self.handle,
-            vrep.simx_opmode_streaming)
+        vrep.simxGetObjectPosition(self.sim.client_id, self.component.handle, -1, vrep.simx_opmode_streaming)
 
         val = None
         while True:
-            ret, *state = vrep.simxReadProximitySensor(self.sim.client_id, self.handle,
-                vrep.simx_opmode_buffer)
+            ret, *state = vrep.simxGetObjectPosition(self.sim.client_id, self.component.handle, -1, vrep.simx_opmode_buffer)
 
             if ret == 0:
                 val = self.result(*state)
@@ -46,4 +45,4 @@ class ProximitySensor(Sensor):
             yield val
 
 
-sensors["proximity"] = ProximitySensor
+sensors["position"] = Position

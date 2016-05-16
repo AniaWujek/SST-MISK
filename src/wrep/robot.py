@@ -7,6 +7,7 @@ especcially all it's sensors and effectors.
 
 from .sensors import Sensor
 from .motor import Motor
+from wrep.vrep import vrep
 
 
 class Robot:
