@@ -7,8 +7,7 @@ especcially all it's sensors and effectors.
 
 from .sensors import Sensor
 from .motor import Motor
-from wrep.vrep import vrep
-
+from .communication import Commutron
 
 class Robot:
     """
@@ -61,6 +60,16 @@ class Robot:
 
         motor = Motor(simulation=self.sim, name=name)
         self.motors[key] = motor
+
+    def start_communication(self):
+        """
+        Initialize and start listening for network messages adressed to
+        this robot.
+        """
+        if self.__name == "Unnamed":
+            raise Exception("Only named robots can communicate")
+
+        self.commutron = Commutron(self.__name)
 
     @property
     def name(self):
