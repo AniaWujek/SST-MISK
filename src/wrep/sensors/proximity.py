@@ -19,7 +19,6 @@ class ProximitySensor(Sensor):
             type="proximity")
         self._reader = self.reader()
 
-    @property
     def read(self):
         """
         Get sensor reading.

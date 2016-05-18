@@ -44,7 +44,7 @@ class Robot:
         Return dictionary containing results from all sensors
         assigned to the robot.
         """
-        return {key: self.sensors[key].read for key in self.sensors}
+        return {key: self.sensors[key].read() for key in self.sensors}
 
     def add_motor(self, name, key=None):
         """

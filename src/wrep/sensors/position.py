@@ -19,8 +19,7 @@ class Position(Sensor):
         self._reader = self.reader()
         self.component = component
         self.sim = simulation
-        
-    @property
+
     def read(self):
         """
         Get sensor reading.

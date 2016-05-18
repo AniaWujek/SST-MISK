@@ -19,7 +19,7 @@ robot.add_motor(
 robot.add_motor(
     name="Pioneer_p3dx_rightMotor#0",
     key="right")
-    
+
 robot0 = Robot(sim)
 
 for i in range(1, 17):
@@ -35,7 +35,7 @@ robot0.add_motor(
 robot0.add_motor(
     name="Pioneer_p3dx_rightMotor#1",
     key="right")
-    
+
 import time
 #robot.motors["left"].velocity = 100
 #time.sleep(5)
@@ -63,10 +63,10 @@ robot0.add_sensor(
     sensor_type="position",
     key="position",
     component=robot0.motors["left"])
-print(robot0.sensors["position"].read)
+print(robot0.sensors["position"].read())
 time.sleep(2)
 
-print(robot0.sensors["position"].read)
+print(robot0.sensors["position"].read())
 
 
 
