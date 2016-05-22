@@ -8,13 +8,16 @@ especcially all it's sensors and effectors.
 from .sensors import Sensor
 from .motor import Motor
 from .communication import Commutron
+from wrep.vrep import vrep
 
-class Robot:
+class Robot():
     """
     Basically it's a flexible container for all robots parts.
     """
 
-    def __init__(self, simulation, name=None):
+    def __init__(self, simulation, name):
+        ret, _handle = vrep.simxGetObjectHandle(simulation.client_id, name, vrep.simx_opmode_blocking)
+        self.handle = _handle
         self._name = name
         self.sim = simulation
         self.sensors = dict()

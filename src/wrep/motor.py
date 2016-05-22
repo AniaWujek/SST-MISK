@@ -44,5 +44,5 @@ class Motor(Component):
     def velocity(self, value):
         ret = vrep.simxSetJointTargetVelocity(self.sim.client_id, self.handle, value,
             vrep.simx_opmode_oneshot)
-        print(ret)
+        #print(ret)
         self._position = value
