@@ -96,7 +96,7 @@ time.sleep(0.5)
 desired_p = start_positions[robot_number]
 current_p = (robot.sensors["position"].read().pos[0], robot.sensors["position"].read().pos[1])
 
-print("I want to robot be in position:")
+print("I want robot to be in position:")
 print(desired_p)
 print("And orientation:")
 print(math.pi/2.0)
