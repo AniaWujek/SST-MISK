@@ -138,21 +138,28 @@ if current_o < 0:
 precision_p = 0.1
 precision_o = 0.05
 
+
+#aktualna roznica miedzy pozycjami zadana a aktualna
+d_p = (desired_o[0] - current_o[0],desired_o[1] - current_o[1])
+v_max = 5
+
+while abs(d_p[0]) > precision_p or abs(d_p[1]) > precision_p:
+	k = math.sqrt(math.pow(d_p[0], 2) + math.pow(d_p[1], 2))
+	v = min(v_max, k*v_max)
+	
+
+
+
+
+
 #max. predkosc podczas obrotu
 v_max = 5
 
 #aktualna roznica miedzy orientacjami zadana a aktualna
 d_o = desired_o - current_o
 
-#taki sobie regulator P - dziala
-k = min([abs(d_o), 2*math.pi-abs(d_o)])/(2*math.pi)
-print(desired_o)
-print(current_o)
-print(d_o)
-print(k)
-print("*****")
-
 while abs(d_o) > precision_o:
+	#taki sobie regulator P - dziala
 	k = min([abs(d_o), 2*math.pi-abs(d_o)])/(2*math.pi)
 	v = k*v_max
 	#ify stad, ze chcemy obracac sie krotsza droga
