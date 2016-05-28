@@ -10,13 +10,14 @@ class Pioneer(Robot):
     Only one robot can be created per process.
     """
     def __new__(cls, *args, **kwarg):
-        if cls.getattribute('created', False):
+        if getattr(cls, 'created', False):
             raise Exception("Only one robot may be controlled by process.")
         cls.created = True
-        return super(Pioneer, cls).__new__(cls, *args, **kwarg)
+        return super(Pioneer, cls).__new__(cls)
 
     def __init__(self, simulation, name, robot_number=None):
-        super(Pioneer, self).__init__(self, simulation, "Pioneer_p3dx#{nn}".format(nn=robot_number))
+        super(Pioneer, self).__init__(simulation, "Pioneer_p3dx#{nn}".format(nn=robot_number))
+        self._name = name
 
         if robot_number is None:
             robot_number = name
@@ -47,9 +48,9 @@ class Pioneer(Robot):
             key="orientation",
             component=self)
 
-        self.name = name
         self.start_communication()
 
     def __del__(self):
         # For sake of completeness, nothing guaranteed
         self.__class__.created = False
+
