@@ -77,7 +77,7 @@ class Robot():
     @property
     def name(self):
         if self._name is not None:
-            return self._name
+            return str(self._name)
         else:
             return "Unnamed"
 

@@ -2,7 +2,9 @@
 Robot extension to be used with vrep's Pioneer robot used in simulation.
 """
 from wrep import Simulation, Robot
-
+from time import sleep
+import sys
+import math
 
 class Pioneer(Robot):
     """
@@ -22,6 +24,9 @@ class Pioneer(Robot):
         if robot_number is None:
             robot_number = name
 
+        self.behavior = "idle"
+        self.destination = None
+        
         for i in range(1, 17):
             self.add_sensor(
                 name="Pioneer_p3dx_ultrasonicSensor{n}#{nn}".format(n=i, nn=robot_number),
@@ -47,10 +52,65 @@ class Pioneer(Robot):
             sensor_type="orientation",
             key="orientation",
             component=self)
-
+        print("Starting communication for " + str(self.name) + ".\n")
         self.start_communication()
+        print("Communication for " + str(self.name) + " started!\n")
 
     def __del__(self):
         # For sake of completeness, nothing guaranteed
         self.__class__.created = False
+    def step(self):
+        print("Begginning step")
+        fun=getattr(self, self.behavior)
+        fun()
+        print("Ending step")
+        sleep(2)
+    def run(self):
+        pos = self.sensors["position"].read()
+        if pos is None:
+            return
+        pos=pos.pos
+        status = self.sensors["orientation"].read()
+        if status is None:
+            return
+        print("Destination: "+str(self.destination))
+        print("Position: "+str(pos[0]))
+        current_o = status.ori[2]
+        precision_p = 0.1
+        precision_o = 0.05
+        v_max_o = 5
+        v_max_p = 2
+        if current_o < 0:
+            current_o = math.pi + (math.pi + current_o)
+        d_p = (self.destination[0] - pos[0],self.destination[1] - pos[1])
+        desired_o = math.atan2(-d_p[1], -d_p[0])+math.pi
+        d_o = desired_o - current_o
+        k_p = math.sqrt(math.pow(d_p[0], 2) + math.pow(d_p[1], 2))
+        v_p = min(v_max_p, k_p*v_max_p)
+        
+        k = min([abs(d_o), 2*math.pi-abs(d_o)])/(2*math.pi)
+        v = k*v_max_p
+        if d_o < -math.pi:
+            v_right = -v 
+            v_left = v
+        elif d_o < 0:
+            v_right = v 
+            v_left = -v
+        elif d_o < math.pi:
+            v_right = -v 
+            v_left = v
+        else:
+            v_right = v 
+            v_left = -v
+            
+        self.motors["left"].velocity = v_left+v_p
+        self.motors["right"].velocity = v_right+v_p
+    def goto(self, pos):
+        self.destination=pos
+        self.behavior="run"
+    def set_row(self):
+        self.name
+    def idle(self):
+        self.motors["left"].velocity = 0
+        self.motors["right"].velocity = 0
 
