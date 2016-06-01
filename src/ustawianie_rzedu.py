@@ -57,7 +57,7 @@ for i in range(robot_count):
 
 
 #tworzymy robota
-sim = Simulation(port_number=19999)
+sim = Simulation(port_number=19870)
 
 robot = Robot(sim, "Pioneer_p3dx#{nn}".format(nn=robot_number))
 

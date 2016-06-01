@@ -40,7 +40,8 @@ class Position(Sensor):
 
             if ret == 0:
                 val = self.result(*state)
-
+            else:
+                val = None
             yield val
 
 
