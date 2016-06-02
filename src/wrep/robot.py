@@ -17,7 +17,13 @@ class Robot():
 
     def __init__(self, simulation, name):
         ret, _handle = vrep.simxGetObjectHandle(simulation.client_id, name, vrep.simx_opmode_blocking)
+        if ret != 0:
+            raise Exception("Could not connect to robot {name}".format(name=name))
         self.handle = _handle
+        print("SIMCLIID: "+ str(simulation.client_id))
+        print("NAME: "+ str(name))
+        print("_handle: "+ str(_handle))
+        print("RET: "+ str(ret))
         self._name = name
         self.sim = simulation
         self.sensors = dict()

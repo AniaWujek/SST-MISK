@@ -6,13 +6,27 @@ Script responsible for managing single robot.
 
 from argparse import ArgumentParser
 from configparser import ConfigParser
-from wrep import Simulation
+from wrep import Simulation, Planner
 from pioneer import Pioneer
+from time import sleep
 
 
 def main(name, environment):
     sim = Simulation(port_number=19870+name)
-    robot = Pioneer(sim, name)
+    robot = Pioneer(sim, name, environment["robots"])
+    #planner = Planner(robot, environment)
+    robot.add_sensor(
+        name=None,
+        sensor_type="position",
+        key="position",
+        component=robot)
+        
+    robot.add_sensor(
+        name=None,
+        sensor_type="orientation",
+        key="orientation",
+        component=robot)
+        
     robot.goto([0,0])
     while True:
         robot.step()

@@ -87,6 +87,8 @@ robot.add_sensor(
     key="orientation",
     component=robot)
     
+import pdb
+pdb.set_trace()
 #zeby czujniki zaczely dzialac poprawnie
 robot.sensors["orientation"].read()
 robot.sensors["position"].read()
