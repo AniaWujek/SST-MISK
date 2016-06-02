@@ -14,7 +14,7 @@ class Pioneer(Robot):
     Only one robot can be created per process.
     """
 
-    precision_p = 0.1
+    precision_p = 3
     precision_o = 0.05
 
     def __new__(cls, *args, **kwarg):
@@ -82,8 +82,9 @@ class Pioneer(Robot):
             return None
 
         pos=pos.pos
-        if sum(x**2 for x in pos)-sum(x**2 for x in self.destination) < self.precision_p:
-            self.behavior = "idle"
+        #print(str(abs(sum(x**2 for x in pos)-sum(x**2 for x in self.destination))))
+        if abs(sum(x**2 for x in pos)-sum(x**2 for x in self.destination)) < self.precision_p:
+            self.behavior = "rotate"
             return True
 
         status = self.sensors["orientation"].read()
@@ -120,6 +121,11 @@ class Pioneer(Robot):
         self.motors["right"].velocity = v_right+v_p
         self.motors["left"].velocity = v_left+v_p
         return False
+
+    def rotate(self)
+        #TODO
+        self.behavior = "idle"
+        return
 
     def goto(self, pos):
         self.destination=pos

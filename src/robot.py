@@ -14,7 +14,7 @@ from time import sleep
 def main(name, environment):
     sim = Simulation(port_number=19870+name)
     robot = Pioneer(sim, name, environment["robots"])
-    #planner = Planner(robot, environment)
+    planner = Planner(robot, environment)
     robot.add_sensor(
         name=None,
         sensor_type="position",
@@ -27,7 +27,9 @@ def main(name, environment):
         key="orientation",
         component=robot)
         
-    robot.goto([0,0])
+    #robot.goto([0,0])
+    print("Begginning run forever")
+    planner.run_forever()
     while True:
         robot.step()
 
