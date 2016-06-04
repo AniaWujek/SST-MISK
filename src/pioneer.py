@@ -132,9 +132,6 @@ class Pioneer(Robot):
         self.destination=pos
         self.behavior="run"
 
-    def set_row(self):
-        goto
-        self.name
 
     def idle(self):
         self.motors["left"].velocity = 0
