@@ -31,7 +31,9 @@ def main(name, environment):
     print("Begginning run forever")
     planner.run_forever()
     while True:
-        robot.step()
+        if robot.step():
+            planner.next_step()
+
 
 if __name__ == "__main__":
     parser = ArgumentParser(description="Robot control module")

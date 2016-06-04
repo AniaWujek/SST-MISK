@@ -73,7 +73,8 @@ class Pioneer(Robot):
 
     def step(self):
         fun=getattr(self, self.behavior)
-        fun()
+        if fun():
+            return True
         sleep(0.5)
 
     def run(self):
@@ -85,7 +86,7 @@ class Pioneer(Robot):
         #print(str(abs(sum(x**2 for x in pos)-sum(x**2 for x in self.destination))))
         if abs(sum(x**2 for x in pos)-sum(x**2 for x in self.destination)) < self.precision_p:
             self.behavior = "rotate"
-            return True
+            return False
 
         status = self.sensors["orientation"].read()
         if status is None:
@@ -122,10 +123,10 @@ class Pioneer(Robot):
         self.motors["left"].velocity = v_left+v_p
         return False
 
-    def rotate(self)
+    def rotate(self):
         #TODO
         self.behavior = "idle"
-        return
+        return True
 
     def goto(self, pos):
         self.destination=pos
