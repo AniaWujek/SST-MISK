@@ -37,7 +37,7 @@ class Planner:
     print("NEXT STAGE" + str(self.stage)) 
     self.substage = 0
     self.stage = self.stage + 1
-    if self.stage > self.width / self.spaces_width:
+    if self.stage >= self.width / self.spaces_width:
       return
     self.next_step()
   def next_step(self):
