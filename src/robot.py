@@ -31,11 +31,15 @@ def main(name, environment):
     #robot.goto([0,0])
     print("Begginning run forever")
     planner.run_forever()
-    while True:        
+    while True:
+        pos = robot.sensors["position"].read().pos
+        robot.commutron.send("BigScaryCloud_Bill", str(name)+"_"+str(pos[0])+"_"+str(pos[1]))  
+        time.sleep(0.2)      
         if robot.step():
             planner.broadcast_info()
             
             #nie wiem czy to dobrze, bo to blokujaca funkcja czekajaca na synchro sasiadow
+            #ale w sumie co ma wtedy robot do roboty
             planner.neighbors_sync()      
                     
             planner.next_step()
