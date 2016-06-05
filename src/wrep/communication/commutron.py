@@ -63,6 +63,7 @@ class Commutron:
         robots = [f for f in os.listdir(self.path) if f != self.name]
         for robot in robots:
             self.send(robot, message)
+            #wyslano("print do robota "+str(robot))
 
     def send(self, robot_name, message):
         """

@@ -21,43 +21,44 @@ class Planner:
     self.spaces_width = self.width / no_paths
     self.distances = self.spaces_width/no_robots
     self.stage = 0
-    self.substage = 0
+    self.substage = 1
 
   def run_forever(self):
-    print("Running...")
+    #print("Running...")
     #while True:
     if not self.cloud:
       x=-self.length/2
       y=-self.width/2+self.distances*int(self.robot.name)
       self.robot.goto([x,y])
-    else:
-      print("OR ELSE")
+    #else:
+      #print("OR ELSE")
 
   def change_stage(self):
-    print("NEXT STAGE" + str(self.stage)) 
+    #print("NEXT STAGE" + str(self.stage)) 
     self.substage = 0
     self.stage = self.stage + 1
     if self.stage >= self.width / self.spaces_width:
       return
     self.next_step()
+    
   def next_step(self):
-    print(str(self.robot.name) + " NEXT PHASE " + str(self.substage))
+    #print(str(self.robot.name) + " NEXT PHASE " + str(self.substage))
     if not self.cloud:
       x=-self.length/2
       y=-self.width / 2 + self.distances * int(self.robot.name) + self.stage * self.spaces_width
       if self.stage % 2 == 0:
         self.robot.goto([x + self.distances * self.substage , y])
-        print(str(self.robot.name) + " NO PHASE1 " + str(self.length / self.distances))
+        #print(str(self.robot.name) + " NO PHASE1 " + str(self.length / self.distances))
         if self.substage > self.length / self.distances:
           self.change_stage()
           return 
         self.substage = self.substage + 1
       elif self.stage % 2 == 1:
         self.robot.goto([- x - self.distances * self.substage , y])
-        print(str(self.robot.name) + " NO PHASE2 " + str(self.length / self.distances))
+        #print(str(self.robot.name) + " NO PHASE2 " + str(self.length / self.distances))
         if self.substage > self.length / self.distances:
           self.change_stage()
           return 
         self.substage = self.substage + 1
-    else:
-      print("OR ELSE 2")
+    #else:
+      #print("OR ELSE 2")

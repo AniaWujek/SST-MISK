@@ -136,4 +136,5 @@ class Pioneer(Robot):
     def idle(self):
         self.motors["left"].velocity = 0
         self.motors["right"].velocity = 0
+        sleep(0.2)
 
