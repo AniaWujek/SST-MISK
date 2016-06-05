@@ -33,17 +33,11 @@ def main(name, environment):
     planner.run_forever()
     while True:        
         if robot.step():
-            robot.commutron.broadcast(str(name)+str(planner.substage))
-            sync_left = False
-            sync_right = False
-            while not (sync_left and sync_right):
-                message = robot.commutron.message
-                if message is not None:
-                    if (name > 0 and message == str(name-1)+str(planner.substage)) or name is 0: #jesli od sasiada z lewej
-                        sync_left = True 
-                    if (name < 2 and message == str(name+1)+str(planner.substage)) or name is 2: #jesli od sasiada z prawej
-                        sync_right = True
-                time.sleep(0.2)                        
+            planner.broadcast_info()
+            
+            #nie wiem czy to dobrze, bo to blokujaca funkcja czekajaca na synchro sasiadow
+            planner.neighbors_sync()      
+                    
             planner.next_step()
 
 

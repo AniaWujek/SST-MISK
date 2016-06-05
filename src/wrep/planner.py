@@ -62,3 +62,25 @@ class Planner:
         self.substage = self.substage + 1
     #else:
       #print("OR ELSE 2")
+            
+  def broadcast_info(self):
+      self.robot.commutron.broadcast(str(self.robot._name)+str(self.substage))
+        
+  def neighbors_sync(self):
+      sync_left = False
+      sync_right = False
+      while not (sync_left and sync_right):
+          message = self.robot.commutron.message
+          if message is not None:
+              if (self.robot._name > 0 and message == str(self.robot._name-1)+str(self.substage)) or self.robot._name is 0: #jesli od sasiada z lewej
+                  sync_left = True 
+              if (self.robot._name < 2 and message == str(self.robot._name+1)+str(self.substage)) or self.robot._name is 2: #jesli od sasiada z prawej
+                  sync_right = True
+          sleep(0.2)          
+      
+  
+  
+  
+  
+  
+  

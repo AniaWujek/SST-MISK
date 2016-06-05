@@ -137,4 +137,14 @@ class Pioneer(Robot):
         self.motors["left"].velocity = 0
         self.motors["right"].velocity = 0
         sleep(0.2)
+        
+    
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
 
