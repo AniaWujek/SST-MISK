@@ -7,4 +7,4 @@ done;
 for i in $(seq 0 $(($1 - 1))); do
 	python3 robot.py env.conf $i &
 done
-python3 cloud_start.py &
+python3 cloud.py &
