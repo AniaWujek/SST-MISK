@@ -29,9 +29,9 @@ class Planner:
 
         #TODO: zmienic podzial, dziala tylko dla kwadratow
         self.no_substages = self.length // 5
-        print(self.no_substages)
+        #print(self.no_substages)
         self.substage_length= self.length / self.no_substages
-        print(self.substage_length)
+        #print(self.substage_length)
         self.stage = 0
         self.substage = 0
         self.cloud_sensor = None
@@ -60,8 +60,8 @@ class Planner:
             #print("OR ELSE")
 
     def change_stage(self):
-        if self.substage >= self.no_substages:
-            #print("NEXT STAGE" + str(self.stage)) 
+        if self.substage > self.no_substages:
+            print(str(self.robot.name) + " NEXT STAGE " + str(self.stage)) 
             self.substage = 0
             self.stage = self.stage + 1
             if self.stage >= self.no_stages:
@@ -69,7 +69,7 @@ class Planner:
                 print("Current stage: " + str(self.stage))
                 self.robot.endofpath()
             return
-        #print(str(self.robot.name) + " NEXT SUBSTAGE " + str(self.substage))    
+        print(str(self.robot.name) + " NEXT SUBSTAGE " + str(self.substage))    
         self.substage = self.substage + 1
     def next_substage(self, direction, x, y):
         #print(self.number)
