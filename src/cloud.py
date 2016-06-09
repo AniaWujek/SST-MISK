@@ -9,6 +9,9 @@ import socket
 
 from wrep.communication import Commutron
 from socketserver import UnixStreamServer, BaseRequestHandler
+from argparse import ArgumentParser
+from configparser import ConfigParser
+
 
 
 class Cloud(BaseRequestHandler):
@@ -59,11 +62,16 @@ class Cloud(BaseRequestHandler):
 
 
 if __name__ == "__main__":
-    try:
-        center = [-10, -17]
-        radius = 5
-        path = os.path.join("/tmp/sst/", Cloud.name)
-        server = UnixStreamServer(path, Cloud.handler(center, radius))
-        server.serve_forever()
-    except KeyboardInterrupt:
-        pass
+    parser = ArgumentParser(description="Cloud sensor")
+    parser.add_argument("config", help="Path to environment configuration")
+    args = parser.parse_args()
+
+    config = ConfigParser()
+    config.read(args.config)
+    cloud = config["cloud"]
+    radius = int(cloud["radius"])
+    center = map(float, map(float, cloud["center"].split(',')))
+    path = os.path.join("/tmp/sst/", Cloud.name)
+    server = UnixStreamServer(path, Cloud.handler(center, radius))
+    print("Starting server")
+    server.serve_forever()
