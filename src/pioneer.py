@@ -14,7 +14,7 @@ class Pioneer(Robot):
     Only one robot can be created per process.
     """
 
-    precision_p = 3
+    precision_p = 0.5
     precision_o = 0.05
 
     def __new__(cls, *args, **kwarg):
@@ -85,11 +85,11 @@ class Pioneer(Robot):
 
         pos=pos.pos
         if math.sqrt( (pos[0] - self.destination[0])**2 + (pos[1] - self.destination[1])**2 ) < self.precision_p:
-            #print("Robot: " + str(self.name) + "\n" + \
-            #    "Pose: " + str(pos) + "\n" + \
-            #    "Destination: " + str(self.destination) + "\n" + \
-            #    "Lesser: " + str(abs(sum(x**2 for x in pos)-sum(x**2 for x in self.destination))) + "\n" + \
-            #    "Bigger: " + str(self.precision_p))
+            print("Robot: " + str(self.name) + "\n" + \
+                "Pose: " + str(pos) + "\n" + \
+                "Destination: " + str(self.destination) + "\n" + \
+                "Lesser: " + str(abs(sum(x**2 for x in pos)-sum(x**2 for x in self.destination))) + "\n" + \
+                "Bigger: " + str(self.precision_p))
             self.behavior = "rotate"
             return False
 
