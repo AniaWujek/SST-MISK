@@ -76,6 +76,7 @@ class Pioneer(Robot):
         if fun():
             return True
         sleep(0.5)
+        return False
 
     def run(self):
         pos = self.sensors["position"].read()
@@ -83,8 +84,12 @@ class Pioneer(Robot):
             return None
 
         pos=pos.pos
-        #print(str(abs(sum(x**2 for x in pos)-sum(x**2 for x in self.destination))))
-        if abs(sum(x**2 for x in pos)-sum(x**2 for x in self.destination)) < self.precision_p:
+        if math.sqrt( (pos[0] - self.destination[0])**2 + (pos[1] - self.destination[1])**2 ) < self.precision_p:
+            print("Robot: " + str(self.name) + "\n" + \
+                "Pose: " + str(pos) + "\n" + \
+                "Destination: " + str(self.destination) + "\n" + \
+                "Lesser: " + str(abs(sum(x**2 for x in pos)-sum(x**2 for x in self.destination))) + "\n" + \
+                "Bigger: " + str(self.precision_p))
             self.behavior = "rotate"
             return False
 
@@ -128,11 +133,13 @@ class Pioneer(Robot):
 
     def rotate(self):
         #TODO
-        self.behavior = "idle"
+        #print("ON POSITION")
+        #self.behavior = "idle"
         return True
 
     def goto(self, pos):
         self.destination=pos
+        print("Position for " + str(self.name) + " " + str(pos))
         self.behavior="run"
 
 
@@ -140,6 +147,21 @@ class Pioneer(Robot):
         self.motors["left"].velocity = 0
         self.motors["right"].velocity = 0
         sleep(0.2)
+        return True
+
+    def endofpath(self):
+        print("Robot " + self.name + " ended.")
+        self.behavior="ended"
+
+    def wait(self):
+        self.behavior="ended"
+
+    def ended(self):
+        self.motors["left"].velocity = 0
+        self.motors["right"].velocity = 0
+        sleep(0.2)
+        return False
+
 
     def obstacle_correction(self, velocity):
         # [left, right]
@@ -195,7 +217,6 @@ class Pioneer(Robot):
 
 
         #print("sdfv")
-        
     
     	
     	

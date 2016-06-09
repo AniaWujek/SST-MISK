@@ -34,22 +34,24 @@ def main(name, environment):
 
     #robot.goto([0,0])
     print("Begginning run forever")
-    planner.run_forever()
+    planner.get_ready()
     while True:
         pos = robot.sensors["position"].read().pos
         d = dict()
         d["robot"] = int(robot.name)
+        pos = robot.sensors["position"].read().pos
         d["position"] = pos[0:2]
         robot.commutron.send("BigScaryCloud_Bill", json.dumps(d))
+        planner.check_mail()
         time.sleep(0.2)
-        if robot.step():
-            planner.broadcast_info()
-
+        decide = robot.step()
+        #print("DECISION " + str(robot.name) + " " + str(decide))
+        if decide:
             #nie wiem czy to dobrze, bo to blokujaca funkcja czekajaca na synchro sasiadow
             #ale w sumie co ma wtedy robot do roboty
             #planner.neighbors_sync()
-
             planner.next_step()
+        planner.broadcast_info()
 
 
 
