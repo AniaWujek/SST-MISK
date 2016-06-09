@@ -41,6 +41,8 @@ class Cloud(BaseRequestHandler):
         raw = self.request.recv(self.maxsize).strip()
         data = json.loads(raw.decode("utf-8"))
 
+        if "type" not in data or data["type"] != "cloudread":
+            return
         res = dict()
         res['concentration'] = self.concentration(data["position"])
         res['robot'] = data['robot']
@@ -57,8 +59,11 @@ class Cloud(BaseRequestHandler):
 
 
 if __name__ == "__main__":
-    center = [-10, -17]
-    radius = 5
-    path = os.path.join("/tmp/sst/", Cloud.name)
-    server = UnixStreamServer(path, Cloud.handler(center, radius))
-    server.serve_forever()
+    try:
+        center = [-10, -17]
+        radius = 5
+        path = os.path.join("/tmp/sst/", Cloud.name)
+        server = UnixStreamServer(path, Cloud.handler(center, radius))
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
