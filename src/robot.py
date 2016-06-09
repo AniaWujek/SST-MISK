@@ -47,7 +47,7 @@ def main(name, environment):
 
             #nie wiem czy to dobrze, bo to blokujaca funkcja czekajaca na synchro sasiadow
             #ale w sumie co ma wtedy robot do roboty
-            planner.neighbors_sync()
+            #planner.neighbors_sync()
 
             planner.next_step()
 

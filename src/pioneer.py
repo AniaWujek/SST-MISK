@@ -119,8 +119,11 @@ class Pioneer(Robot):
         else:
             v_right = -v_o 
             v_left = v_o
-        self.motors["right"].velocity = v_right+v_p
-        self.motors["left"].velocity = v_left+v_p
+
+        velocity = self.obstacle_correction([v_left+v_p, v_right+v_p])
+
+        self.motors["left"].velocity = velocity[0]
+        self.motors["right"].velocity = velocity[1]        
         return False
 
     def rotate(self):
@@ -137,6 +140,61 @@ class Pioneer(Robot):
         self.motors["left"].velocity = 0
         self.motors["right"].velocity = 0
         sleep(0.2)
+
+    def obstacle_correction(self, velocity):
+        # [left, right]
+        vel = velocity
+        readings_good = False
+        while not readings_good:
+            readings = self.sensor_readings
+            readings_good = True
+            for r in readings:
+                if readings[r] == None:
+                    readings_good = False
+
+        #print(readings)
+
+        #interesuja nas czujniki od 1 do 8
+        # frontowe to 4 i 5
+        # prawy to 8
+        # lewy to 1
+        distances = [0,0,0,0,0,0,0,0]
+        for i in range(8):
+            s = "proximity-{nn}".format(nn=i+1)
+            if readings[s].state == True:
+                dist = math.sqrt(math.pow(readings[s].point[0],2)+math.pow(readings[s].point[1],2))
+            else:
+                dist = 100;
+            distances[i]=dist
+        min_dist = min(distances)
+
+        # if self._name == 2:
+        #     print(distances)
+        
+        scary_distance = 0.2
+
+        if min_dist < scary_distance:
+            min_dist_sensor = distances.index(min_dist)
+            #print(self._name, min_dist_sensor)
+            correction = 10*(scary_distance - min_dist)
+            
+            #przeszkoda z lewej, sensor 3 - straszna przeszkoda, sensor 0 - malo wazna
+            if min_dist_sensor <= 3:
+                correction = correction * min_dist_sensor
+                print(correction)
+                vel = [vel[0]+correction,vel[1]-correction]
+
+            #przeszkoda z prawej, sensor 4 - straszna przeszkoda, sensor 7 - malo wazna
+            else:
+                correction = correction * (7 - min_dist_sensor)
+                print(correction)
+                vel = [vel[0]-correction,vel[1]+correction]
+
+
+        return vel
+
+
+        #print("sdfv")
         
     
     	

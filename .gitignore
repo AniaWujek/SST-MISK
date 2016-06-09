@@ -204,3 +204,5 @@ luac.out
 
 
 *.db
+
+/vrep/
