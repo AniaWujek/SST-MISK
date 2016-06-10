@@ -82,24 +82,47 @@
 	\subsection{Struktura systemu}
 	System prezentowany w projekcie składa się z następujących elementów:
 	\begin{itemize}
-	\item \textbf{symulator przestrzeni roboczej}:
-	
-	odpowiedzialny za wizualizację oraz fizyczne oddziaływania pomiędzy elementami (np. kolizje), a także za wyznaczanie odczytów czujników (oprócz czujników skażenia);
-	
-	\item \textbf{symulator robotów}:
-	
-	odpowiedzialny za wyznaczanie sterowania robotów na podstawie odczytów z czujników, realizujący określone zadanie;
-	
-	\item \textbf{symulator chmury skażenia}:
-	
-	odpowiedzialny za generowanie odczytów czujników skażenia;
-	
-	\item \textbf{komunikacja}:
+	\item symulator przestrzeni roboczej	
+	\item symulator robotów
+	\item symulator chmury skażenia	
+	\item komunikacja
 	
 	zapewnia przekazywanie informacji pomiędzy poszczególnymi symulatorami.
 	\end{itemize}
 	
 	\subsubsection{Symulator przestrzeni roboczej}
+	Symulator ten jest odpowiedzialny za wizualizację całej symulacji - przestrzeni roboczej, przeszkód, robotów oraz chmury skażenia. Generuje także fizyczne oddziaływania między elementami, np. kolizje oraz odczyty czujników (oprócz czujników skażenia).
+	
+	\subsubsection{Symulator chmury skażenia}
+	Symulator ten jest odpowiedzialny za generowanie odczytów czujników skażenia. Odczyt jest obliczany na podstawie założonego wcześniej kształtu chmury oraz sposobu, w jaki skażenie rośnie wgłąb chmury.
+	
+	\subsubsection{Symulator robota}
+	W systemie symulator ten będzie zwielokrotniony, aby uzyskać grupę kilku robotów. Odpowiedzialny jest za wyznaczanie sterowania robotów w zależności od odczytów z czujników i wewnętrznego imperatywu, czyli zadania, jakie roboty realizują.
+	
+	\subsubsection{Komunikacja}
+	Aby cały system działał poprawnie, poszczególne elementy muszą móc się ze sobą komunikować. W systemie rozróżniamy następujące kanały komunikacyjne i przesyłane informacje:
+	\begin{itemize}
+	\item Symulator przestrzeni roboczej $\rightarrow$ Symulator robota:
+		\begin{itemize}
+		\item odczyty z czujników (oprócz czujnika skażenia)
+		\item pozycja robota (położenie + orientacja)	
+		\end{itemize}
+	\item Symulator robota $\rightarrow$ Symulator przestrzeni roboczej:
+		\begin{itemize}
+		\item sterowanie poszczególnymi silnikami
+		\end{itemize}
+	\item Symulator chmury skażenia $\rightarrow$ Symulator robota:
+		\begin{itemize}
+		\item odczyt czujnika skażenia
+		\end{itemize}
+	\item Symulator robota $\rightarrow$ Symulator robota:
+		\begin{itemize}
+		\item ostatni punkt docelowy, do którego udało się dotrzeć
+		\item informacja o wykrytej chmurze skażenia
+		\end{itemize}
+	
+	\end{itemize}
+	
 	
 	
 		
