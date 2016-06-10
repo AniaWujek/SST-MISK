@@ -62,21 +62,46 @@
 		Algorytm realizowany przez każdego robota:
 		\begin{enumerate}
 		\item Warunek początkowy: roboty znajdują się w dowolnym punkcie przestrzeni na mapie. Z punktu tego musi istnieć droga prowadząca do obszaru poszukiwań.
-		\item Przemieść się do punktu początkowego, zależnego od liczby robotów, wymiarów przestrzeni poszukiwań i zasięgu czujników, zgodnie ze wzorem:		
+		\item Przemieść się do punktu początkowego (rys. \ref{plansza}), zależnego od liczby robotów, wymiarów przestrzeni poszukiwań i zasięgu czujników (rys. \ref{odleglosci}), zgodnie ze wzorem:		
 		\begin{eqnarray}
-		max_spaces &=& sensor_range \cdot precision_range \\
 		x &=& -length / 2 \\
-		y &=& width / 2 + distances * robot_number + distances / 2
+		y &=& width / 2 + distance * robot\_number + distance / 2
 		\end{eqnarray}
+		W obliczeniach wykorzystywane są następujące parametry:
+		\begin{eqnarray}
+		max\_spaces &=& sensor\_range \cdot precision\_range \\
+		no\_stages &=& ceil(width / (max\_spaces \cdot no\_robots))\\
+		spaces\_width &=& width / no\_stages\\
+		distance &=& spaces\_width/no\_robots
+		\end{eqnarray}
+		\begin{figure}[h!]
+			\centering
+			\includegraphics*[width=0.7\columnwidth]{img/plansza.pdf}
+			\caption{Ustawienie początkowe robotów}
+			\label{plansza}
+		\end{figure}
+		\begin{figure}[h!]
+			\centering
+			\includegraphics*[width=0.7\columnwidth]{img/odleglosci.pdf}
+			\caption{Sposób ustawienia robotów w szeregu}
+			\label{odleglosci}
+		\end{figure}
 		\item Wyznacz kolejny punkt docelowy, zgodnie ze wzorem:
 		\begin{eqnarray}
-		fvvdfv&=& vfdknvdk
+		x_n &=& direction \cdot length / 2 + direction + substage\_length \cdot substage\\
+		y_n &=& width / 2 + distance \cdot robot\_number + stage \cdot spaces\_width + distance / 2
 		\end{eqnarray}
 		\item Udaj się do punktu docelowego, monitorując skażenie oraz wykrywając przeszkody.
 		\item Jeśli wykryto przeszkodę, omiń ją algorytmem Bug2. Wyznacz następny punkt docelowy, jest aktualny został minięty.
 		\item Jeśli wykryto chmurę skażenia, zatrzymaj się.
 		\item Jeśli cały obszar poszukiwań sprawdzony, to koniec algorytmu; jeśli nie, to przejdź do punktu 3.
 		\end{enumerate}
+		\begin{figure}[h!]
+			\centering
+			\includegraphics*[width=0.7\columnwidth]{img/ruch.pdf}
+			\caption{Ruch szeregu robotów}
+			\label{ruch}
+		\end{figure}
 		
 	
 	\subsection{Struktura systemu}
@@ -145,16 +170,44 @@
 	\end{itemize}
 	
 	\section{Realizacja}
+	\subsection{Plik konfiguracyjny}
+	Plik konfiguracyjny powinien zawierać informacje o planszy, robotach i chmurze -- w trzech rozdzielonych modułach.
+	\begin{itemize}
+	\item Moduł [board] opisuje wielkość sektora poszukiwań.\\
+		Posiada następujące parametry:
+	\begin{itemize}
+	\item width -- szerokość planszy
+	\item length -- długość planszy
+	\end{itemize}
+	\item Moduł [robots] opisuje roboty biorące udział w symulacji.\\
+		Posiada następujące parametry:
+	\begin{itemize}
+	\item count -- liczba robotów
+	\item sensor\_range -- zasięg czujników toksyczności
+	\item precision\_range -- parametr wymaganej precyzji, ogranicza maksymalny zasięg czujników, wpływając na mniejsze odległości między robotami (zwiększa zmienną P, por. rys. \ref{odleglosci})
+	\end{itemize}
+	\item Moduł [cloud] opisuje położenie i wielkość chmury.\\
+		Posiada następujące parametry::
+	\begin{itemize}
+	\item center -- położenie środka chmury
+	\item radius -- średnica chmury
+	\end{itemize}
+	\end{itemize}
 	
 	\subsection{Komunikacja}
 	Komunikacja przebiega na zasadzie ogłaszania aktualnych informacji na swój temat przez roboty (oraz chmurę). Informacje przesyłane są za pomocą struktury JSON do gniazd, przypisywanych każdemu modułowi osobno.
-	Wiadomości opatrzone są nagłówkiem, pozwalającym sklasyfikować komunikat. Dane tworzone są w postaci usystematyzowanych słowników, których struktura została odgórnie ustalona.
+	Wiadomości opatrzone są typem, pozwalającym sklasyfikować komunikat. Dane tworzone są w postaci usystematyzowanych słowników, których struktura została odgórnie ustalona.
 	Komunikaty są wysyłane i odbierane asynchronicznie.
 	\subsubsection{Roboty}
-	Poniżej przedstawiono przykład 
+	Roboty wysyłają informacje o swoim postępie w wiadomościach typu "progress". Zawierają one następujące elementy:
+	\begin{itemize}
+	\item "robot" - numer identyfikacyjny robota
+	\item "substage" - postęp robota wzdłuż wyznaczonej ścieżki
+	\item "stage" - postęp robota w numerze ścieżki
+	\end{itemize}
+	Poniżej przedstawiono przykład tworzenia wiadomości o postępie robota.
 	\begin{verbatim}
 	    def broadcast_info(self):
-	        #print("Sending info!" + str(self.number))
 	        message = str(self.robot._name)+str(self.substage)
 	        message = dict()
 	        message["robot"] = self.robot.name
@@ -163,7 +216,23 @@
 	        message["type"] = "progress"
 	        self.robot.commutron.broadcast(json.dumps(message))
 	\end{verbatim}
+	Dodatkowo, symulując działanie czujników toksyczności, wysyłają zapytania do procesu chmury o stężenie w swoim położeniu. Są to
 	\subsubsection{Chmura}
+	Skrypt odpowiadający za symulację chmury wysyła informację o jej położeniu do robotów w wiadomościach typu "cloudread".
+	Zawierają one następujące elementy:
+	\begin{itemize}
+	\item "concentration" - stężenie toksycznych substancji
+	\item "robot" - numer robota, z którym przebiega komunikacja
+	\item "position" - pozycja robota
+	\end{itemize}
+	Poniżej przedstawiono przykład tworzenia wiadomości o chmurze.
+	\begin{verbatim}
+	        res = dict()
+	        res['concentration'] = self.concentration(data["position"])
+	        res['robot'] = data['robot']
+	        res['position'] = data['position']
+	        res['type'] = "cloudread"
+	\end{verbatim}
 	
 	
 	\subsection{Roboty}
