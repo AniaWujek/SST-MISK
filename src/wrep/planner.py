@@ -60,17 +60,18 @@ class Planner:
             #print("OR ELSE")
 
     def change_stage(self):
+        if self.stage >= self.no_stages:
+            print("Max stages: " + str(self.no_stages))
+            print("Current stage: " + str(self.stage))
+            self.robot.endofpath()
+            return
         if self.substage >= self.no_substages:
-            print(str(self.robot.name) + " NEXT STAGE " + str(self.stage + 1)) 
             self.substage = 0
             self.stage = self.stage + 1
-            if self.stage >= self.no_stages:
-                print("Max stages: " + str(self.no_stages))
-                print("Current stage: " + str(self.stage))
-                self.robot.endofpath()
+            print(str(self.robot.name) + " NEXT STAGE " + str(self.stage) + "/" + str(self.no_stages)) 
             return
-        print(str(self.robot.name) + " NEXT SUBSTAGE " + str(self.substage + 1))    
         self.substage = self.substage + 1
+        print(str(self.robot.name) + " NEXT SUBSTAGE " + str(self.substage)+ "/" + str(self.no_substages))   
     def next_substage(self, direction, x, y):
         #print(self.number)
         #print(self.others_status)
@@ -79,8 +80,8 @@ class Planner:
             #print(self.robot.name + " ommiting!")
             return
         self.robot.goto([direction * x + direction * self.substage_length * self.substage , y + self.distances/2])
-        #print(str(self.robot.name) + " NO PHASE2 " + str(self.length / self.distances))
         self.change_stage()
+        #print(str(self.robot.name) + " NO PHASE2 " + str(self.length / self.distances))
         
     def next_step(self):
         if not self.cloud:
