@@ -123,6 +123,26 @@
 	
 	\section{Realizacja}
 	
+	\subsection{Komunikacja}
+	Komunikacja przebiega na zasadzie ogłaszania aktualnych informacji na swój temat przez roboty (oraz chmurę). Informacje przesyłane są za pomocą struktury JSON do gniazd, przypisywanych każdemu modułowi osobno.
+	Wiadomości opatrzone są nagłówkiem, pozwalającym sklasyfikować komunikat. Dane tworzone są w postaci usystematyzowanych słowników, których struktura została odgórnie ustalona.
+	Komunikaty są wysyłane i odbierane asynchronicznie.
+	\subsubsection{Roboty}
+	Poniżej przedstawiono przykład 
+	\begin{verbatim}
+	    def broadcast_info(self):
+	        #print("Sending info!" + str(self.number))
+	        message = str(self.robot._name)+str(self.substage)
+	        message = dict()
+	        message["robot"] = self.robot.name
+	        message["stage"] = self.stage
+	        message["substage"] = self.substage
+	        message["type"] = "progress"
+	        self.robot.commutron.broadcast(json.dumps(message))
+	\end{verbatim}
+	\subsubsection{Chmura}
+	
+	
 	\subsection{Roboty}
 	Wykorzystywane w realizacji zadania roboty Pionieer p3dx wyposażone w ultradźwiękowe czujniki odległości - będą one zapewnione przez symulator V-Rep. Posiadają one napęd różnicowy, pozwalający na dużą swobodę poruszania się po symulowanej przestrzeni. Są przystosowane do rozbudowy o dodatkowe urządzenia -- dzięki czemu mogły by być łatwo dostosowane do realizacji zadania lokalizacji chmury.
 	Dodatkowo, czujniki stężenia toksycznych substancji będą realizowane w skryptach Pythona, ułatwiając jej symulację. Informacje o jej położeniu i kształcie będą przekazywane do Vrepa, gdzie nastąpi ich wizualizacja.
