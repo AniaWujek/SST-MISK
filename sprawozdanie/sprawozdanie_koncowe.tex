@@ -33,6 +33,7 @@
 
 \author{Anna Wujek \\ Łukasz Korpal \\ Wiktor Ślęczka}
 \title{Roboty monitorujace skażenie środowiska - symulator V-REP}
+\date{10 czerwca 2016}
 
 
 \begin{document}
@@ -54,25 +55,25 @@
 		\item Roboty są wyposażone w czujniki pozwalające im wykrywać poziom skażenia oraz przeszkody.
 		\item Roboty są wyposażone w urządzenia pozwalające im się między sobą komunikować się między sobą.
 		\item Chmura skażenia jest odgórnie określona i niezmienna w trakcie trwania symulacji.
-		\item Nieznana jest mapa przestrzeni roboczej, ale znane są jej granice i kształt - prostokąt.
+		\item Nieznana jest mapa obszaru poszukiwań, ale znane są jego granice i kształt - prostokąt.
 	\end{itemize}
 	
 	\subsection{Scenariusz działania}	
 		
 		Algorytm realizowany przez każdego robota:
 		\begin{enumerate}
-		\item Warunek początkowy: roboty znajdują się w dowolnym punkcie przestrzeni na mapie. Z punktu tego musi istnieć droga prowadząca do obszaru poszukiwań.
+		\item Warunek początkowy: robot znajduje się w dowolnym punkcie przestrzeni na mapie. Z punktu tego musi istnieć droga prowadząca do obszaru poszukiwań.
 		\item Przemieść się do punktu początkowego (rys. \ref{plansza}), zależnego od liczby robotów, wymiarów przestrzeni poszukiwań i zasięgu czujników (rys. \ref{odleglosci}), zgodnie ze wzorem:		
 		\begin{eqnarray}
 		x &=& -length / 2 \\
-		y &=& width / 2 + distance * robot\_number + distance / 2
+		y &=& width / 2 + distance * robot\_number + distance / 2 \nonumber
 		\end{eqnarray}
 		W obliczeniach wykorzystywane są następujące parametry:
 		\begin{eqnarray}
-		max\_spaces &=& sensor\_range \cdot precision\_range \\
-		no\_stages &=& ceil(width / (max\_spaces \cdot no\_robots))\\
-		spaces\_width &=& width / no\_stages\\
-		distance &=& spaces\_width/no\_robots
+		max\_spaces &=& sensor\_range \cdot precision\_range\nonumber \\
+		no\_stages &=& ceil(width / (max\_spaces \cdot no\_robots))\nonumber\\
+		spaces\_width &=& width / no\_stages\nonumber\\
+		distance &=& spaces\_width/no\_robots\nonumber
 		\end{eqnarray}
 		\begin{figure}[h!]
 			\centering
@@ -88,8 +89,8 @@
 		\end{figure}
 		\item Wyznacz kolejny punkt docelowy, zgodnie ze wzorem:
 		\begin{eqnarray}
-		x_n &=& direction \cdot length / 2 + direction + substage\_length \cdot substage\\
-		y_n &=& width / 2 + distance \cdot robot\_number + stage \cdot spaces\_width + distance / 2
+		x_n &=& direction \cdot length / 2 + direction + substage\_length \cdot substage\nonumber\\
+		y_n &=& width / 2 + distance \cdot robot\_number + stage \cdot spaces\_width + distance / 2\nonumber
 		\end{eqnarray}
 		\item Udaj się do punktu docelowego, monitorując skażenie oraz wykrywając przeszkody.
 		\item Jeśli wykryto przeszkodę, omiń ją algorytmem Bug2. Wyznacz następny punkt docelowy, jest aktualny został minięty.
@@ -111,20 +112,22 @@
 	\item symulator robotów
 	\item symulator chmury skażenia	
 	\item komunikacja
-	
-	zapewnia przekazywanie informacji pomiędzy poszczególnymi symulatorami.
 	\end{itemize}
 	
 	\subsubsection{Symulator przestrzeni roboczej}
-	Symulator ten jest odpowiedzialny za wizualizację całej symulacji - przestrzeni roboczej, przeszkód, robotów oraz chmury skażenia. Generuje także fizyczne oddziaływania między elementami, np. kolizje oraz odczyty czujników (oprócz czujników skażenia).
+	Symulator ten jest odpowiedzialny za wizualizację całej symulacji - przestrzeni roboczej, przeszkód, robotów oraz chmury skażenia. Generuje także fizyczne oddziaływania między elementami, np. kolizje oraz odczyty czujników (oprócz czujników skażenia). Pożądane jest wykorzystanie w tym celu gotowego narzędzia, oferującego modele robotów i czujników, silnik fizyczny oraz interfejsy komunikacyjne.
+	
+	Narzędziem wykorzystanym w projekcie był symulator V-Rep. Jest on dedykowany do tego typu symulacji i spełnił postawione założenia. W projekcie symuluje rzeczywiste receptory (czujniki odległości) i rzeczywiste efektory (silniki robotów) systemu, a także pełni rolę wirtualnego efektora (warstwy pośredniczącej między rzeczywistym efektorem a podsystemem sterowania, przekładającej polecenia sterowania na uruchamianie silników, a tym samym ruch robota).
 	
 	\subsubsection{Symulator chmury skażenia}
-	Symulator ten jest odpowiedzialny za generowanie odczytów czujników skażenia. Odczyt jest obliczany na podstawie założonego wcześniej kształtu chmury oraz sposobu, w jaki skażenie rośnie wgłąb chmury.
+	Symulator ten jest odpowiedzialny za generowanie odczytów czujników skażenia. Odczyt jest obliczany na podstawie założonego wcześniej kształtu chmury oraz sposobu, w jaki skażenie rośnie wgłąb chmury. Ze względu na brak możliwości zaimplementowania tego typu obiektu bezpośrednio w wybranym symulatorze V-Rep, chmura skażenia została zasymulowana osobno. W projekcie pełni rolę wirtualnego receptora (warstwy pośredniczącej między rzeczywistym receptorem -- czujnikiem skażenia -- a podsystemem sterowania), interpretującego odczyt czujnika skażenia.
 	
 	\subsubsection{Symulator robota}
 	W systemie symulator ten będzie zwielokrotniony, aby uzyskać grupę kilku robotów. Odpowiedzialny jest za wyznaczanie sterowania robotów w zależności od odczytów z czujników i wewnętrznego imperatywu, czyli zadania, jakie roboty realizują.
 	
-	Każdy robot realizuje dokładnie ten sam algorytm
+	W projekcie pełni dwie bardzo ważne role: wirtualnego receptora (warstwy pośredniczącej między rzeczywistymi receptorami -- czujnikami odległości -- a podsystemem sterowania) interpretującego dane z czujników odległości (przetwarzanie polega na filtracji wyników i stwierdzeniu które pomiary są przydatne) oraz podsystemu sterowania (logiki robota, która na podstawie danych z wirtualnych receptorów podejmuje decyzje co do stanu i dalszego zachowania robota, a następnie wysyła odpowiednie sterowania do wirtualnego efektora; kolejnym zadaniem podsystemu sterowania jest komunikacja z innymi robotami w systemie).
+	
+	Każdy robot realizuje dokładnie ten sam algorytm - nie ma jednego wyróżnionego lidera.
 	
 	\subsubsection{Komunikacja}
 	Aby cały system działał poprawnie, poszczególne elementy muszą móc się ze sobą komunikować. W systemie rozróżniamy następujące kanały komunikacyjne i przesyłane informacje:
@@ -254,8 +257,44 @@
 	
 	
 	\subsection{Roboty}
-	Wykorzystywane w realizacji zadania roboty Pionieer p3dx wyposażone w ultradźwiękowe czujniki odległości - będą one zapewnione przez symulator V-Rep. Posiadają one napęd różnicowy, pozwalający na dużą swobodę poruszania się po symulowanej przestrzeni. Są przystosowane do rozbudowy o dodatkowe urządzenia -- dzięki czemu mogły by być łatwo dostosowane do realizacji zadania lokalizacji chmury.
-	Dodatkowo, czujniki stężenia toksycznych substancji będą realizowane w skryptach Pythona, ułatwiając jej symulację. Informacje o jej położeniu i kształcie będą przekazywane do Vrepa, gdzie nastąpi ich wizualizacja.
+	Wykorzystywane w realizacji zadania roboty Pionieer p3dx wyposażone w ultradźwiękowe czujniki odległości - będą one zapewnione przez symulator V-Rep. Posiadają one napęd różnicowy, pozwalający na dużą swobodę poruszania się po symulowanej przestrzeni.
+	
+	Dodatkowo, czujniki stężenia toksycznych substancji będą realizowane w skryptach Pythona, ułatwiając jej symulację. Informacje o jej położeniu i kształcie będą przekazywane do V-Repa, gdzie nastąpi ich wizualizacja.
+	
+	
+	\section{Wnioski}
+	\subsection{Wykorzystane narzędzia}
+	Symulator V-Rep okazał się narzędziem o wielu możliwościach, bardzo rozbudowanym i przydatnym, lecz także posiadającym ograniczenia:
+	\begin{itemize}
+		\item symulator posiada wiele gotowych modeli robotów przeznaczonych do różnego typu zadań i wyposażonych w czujniki; z drugiej strony tworzenie własnego modelu robota jest skomplikowane i czasochłonne, dlatego zdecydowaliśmy się na skorzystanie z gotowego modelu spełniającego nasze wymagania;
+		\item program ten dobrze symuluje fizyczne oddziaływania (np. kolizje) oraz dane z czujników, jednak czasem zdarza mu się błędnie określić pozycję, orientację lub odczyt z czujnika odległości -- zdarzenia te są losowe i dość rzadkie, ale wpływają negatywnie na działanie algorytmów;
+		\item zdecydowaną zaletą jest możliwość uruchomienia serwera, który pozwala na komunikację z symulatorem z zewnątrz, co wykorzystaliśmy w projekcie;
+		\item program podczas symulacji wymaga dość dużej mocy obliczeniowej.
+	\end{itemize}
+	Podsumowując, jest to dobre narzędzie do niewielkich projektów i symulacji oraz nauki przed programowaniem prawdziwych robotów, lecz w przypadku dużych i skomplikowanych projektów może okazać się zbyt powolny i niestabilny.
+	
+	Oprogramowanie poza V-Repem było tworzone przy wykorzystaniu języka Python. Rozwiązanie to miało wiele zalet:
+	\begin{itemize}
+		\item tworzenie części systemu poza V-Repem umożliwiło skorzystanie z wielu bibliotek Pythona;
+		\item każdy robot działał w osobnym wątku (podobnie chmura skażenia), dzięki czemu symulacja była bardziej zbliżona do rzeczywistości;
+		\item wadą rozwiązania była konieczność komunikacji z V-Repem, która wprowadzała opóźnienia, częstotliwość odświeżania stanu robotów oraz symulacji w V-Repie się różniła, a komunikacja nie zawsze działała zgodnie z oczekiwaniami (np. w pewnym momencie pytając V-Repa o pozycję robota otrzymywaliśmy w odpowiedzi pozycję kamery).
+	\end{itemize}
+	
+	\subsection{Realizacja założeń}
+	Udało się stworzyć symulację zawierającą grupę robotów mobilnych. Każdy robot składał się z:
+	\begin{itemize}
+		\item rzeczywistych efektorów i receptorów (realizowanych w V-Repie oraz w symulatorze chmury skażenia w Pythonie);
+		\item wirtualnych efektorów i receptorów (realizowanych w V-Repie oraz w symulatorze robota w Pythonie);
+		\item podsystemu sterowania (realizowanego w symulatorze robota w Pythonie).
+	\end{itemize}
+	Każdy model w V-Repie miał swój unikalny odpowiednik po stronie Pythona, z którym komunikował się na tyle często, by stan logiki robota i wizualizacja w V-Repie nie różniły się między sobą.
+	
+	Dzięki zaimplementowanej komunikacji między wątkami Pythona a V-Repem możliwe było określenie aktualnej pozycji i orientacji robota.
+	
+	Dzięki czujnikom odległości dostępnym w gotowym modelu oraz zamodelowanemu czujnikowi chmury skażenia możliwa była symulacja odczytów, na podstawie których robot podejmował decyzje. Symulacja wiernie odpowiadała rzeczywistości -- robot nie korzystał z żadnych danych, których by nie miał w rzeczywistości.
+	
+	
+	
 	
 \end{document}
 
