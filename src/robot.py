@@ -54,14 +54,12 @@ def main(name, environment):
         if planner.cloud:
             #mamy chmure
             print("cloud")
-            planner.cloud()
-
+            robot.behavior = "idle"
 
         #print("DECISION " + str(robot.name) + " " + str(decide))
         if decide:
             planner.next_step()
         planner.broadcast_info()
-
 
 
 if __name__ == "__main__":
