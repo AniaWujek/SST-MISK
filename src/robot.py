@@ -55,9 +55,11 @@ def main(name, environment):
             #mamy chmure
             print("cloud")
             robot.behavior = "idle"
+        elif planner.cloud_other is not None:
+            planner.find_cloud()
 
         #print("DECISION " + str(robot.name) + " " + str(decide))
-        if decide:
+        elif decide:
             planner.next_step()
         planner.broadcast_info()
 

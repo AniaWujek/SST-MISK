@@ -16,7 +16,7 @@ class Planner:
     def __init__(self, robot, config):
         self.robot = robot
         self.config = config
-        self.number = robot.name
+        self.number = int(robot.name)
         self.width = int(config["board"]["width"])
         self.length = int(config["board"]["length"])
         self.cloud = False
@@ -37,6 +37,8 @@ class Planner:
         self.stage = 0
         self.substage = 0
         self.cloud_sensor = None
+        self.cloud_other = None
+        self.cloud_search = 1
         self.others_status = {str(i): (0,0) for i in range(self.no_robots)}
         del self.others_status[str(self.number)]
 
@@ -47,11 +49,17 @@ class Planner:
             data = json.loads(message)
             if data["type"] == "cloudread":
                 self.cloud_sensor = data["concentration"]
-                if self.cloud_sensor > 10:
+                if self.cloud_sensor > 40:
                     self.cloud = True
+                    message = dict()
+                    message["type"] = "cloudfound"
+                    message["robot"] = self.robot.name
+                    self.robot.commutron.broadcast(json.dumps(message))
 
-            if data["type"] == "progress":
+            elif data["type"] == "progress":
                 self.others_status[data["robot"]] = (data["stage"], data["substage"])
+            elif data["type"] == "cloudfound":
+                self.cloud_other = int(data["robot"])
             message = self.robot.commutron.message
 
     def get_ready(self):
@@ -215,4 +223,40 @@ class Planner:
 
         #self.robot.delta_orientation = angle
         #self.robot.behavior = "rotate"
+
+    def find_cloud(self):
+        pos = self.robot.sensors["position"].read()
+        if pos is None:
+            return None
+        pos=pos.pos
+        if self.cloud_search == 1:
+            print("going ahead for cloud")
+             # Move a bit ahead
+            self.cloud_search = False
+            if self.cloud_other is None:
+                return
+            if self.stage % 2 == 0:
+                dirw = 1
+            else:
+                dirw = -1
+            dx = 2 * abs(self.number - self.cloud_other) * dirw
+            self.new_pos = (pos[0] + dx, pos[1])
+            self.robot.goto(self.new_pos)
+
+        elif self.cloud_search == 2:
+            print("going ahead for cloud again")
+             # Move a bit ahead
+            self.cloud_search = False
+            if self.cloud_other is None:
+                return
+            if self.cloud_other < self.number:
+                dirw = 1
+            else:
+                dirw = -1
+            dy = 2 * abs(self.number - self.cloud_other) * dirw
+            self.new_pos = (pos[0], pos[1] + dy)
+            self.robot.goto(self.new_pos)
+        else:
+            if abs((pos[0]-self.new_pos[0])**2+(pos[1]-self.new_pos[1])**2) < 0.1:
+                self.cloud_search = 2
 

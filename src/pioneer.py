@@ -36,7 +36,7 @@ class Pioneer(Robot):
         self.behavior = "idle"
         self.destination = None
         self.delta_orientation = 0
-        
+
         for i in range(1, 17):
             self.add_sensor(
                 name="Pioneer_p3dx_ultrasonicSensor{n}#{nn}".format(n=i, nn=robot_number),
@@ -98,7 +98,6 @@ class Pioneer(Robot):
         if status is None:
             return None
 
-
         current_o = status.ori[2]
         if current_o < 0:
             current_o = math.pi + (math.pi + current_o)
@@ -114,16 +113,16 @@ class Pioneer(Robot):
         k_o = min([abs(d_o), 2*math.pi-abs(d_o)])/(2*math.pi)
         v_o = k_o*v_max_o
         if d_o < -math.pi:
-            v_right = v_o 
+            v_right = v_o
             v_left = -v_o
         elif d_o < 0:
-            v_right = -v_o 
+            v_right = -v_o
             v_left = v_o
         elif d_o < math.pi:
-            v_right = v_o 
+            v_right = v_o
             v_left = -v_o
         else:
-            v_right = -v_o 
+            v_right = -v_o
             v_left = v_o
 
         self.motors["left"].velocity = v_p + v_left
@@ -144,16 +143,16 @@ class Pioneer(Robot):
         k_o = min([abs(d_o), 2*math.pi-abs(d_o)])/(2*math.pi)
         v_o = k_o*v_max_o
         if d_o < -math.pi:
-            v_right = v_o 
+            v_right = v_o
             v_left = -v_o
         elif d_o < 0:
-            v_right = -v_o 
+            v_right = -v_o
             v_left = v_o
         elif d_o < math.pi:
-            v_right = v_o 
+            v_right = v_o
             v_left = -v_o
         else:
-            v_right = -v_o 
+            v_right = -v_o
             v_left = v_o
 
         self.motors["left"].velocity = v_left
@@ -205,9 +204,6 @@ class Pioneer(Robot):
                 dist = 100;
             distances[i]=dist
         min_dist = min(distances)
-
-        
-        
 
         return min_dist < 0.1
 
