@@ -1,6 +1,7 @@
 #Created by https://www.gitignore.io/api/python,latex,vim,sublimetext,lua
 V-REP_PRO_EDU_V3_3_0_64_Linux/
 ### Python ###
+*#
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
