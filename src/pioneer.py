@@ -35,6 +35,7 @@ class Pioneer(Robot):
             robot_number = name
         self.behavior = "idle"
         self.destination = None
+        self.delta_orientation = 0
         
         for i in range(1, 17):
             self.add_sensor(
@@ -125,20 +126,44 @@ class Pioneer(Robot):
             v_right = -v_o 
             v_left = v_o
 
-        velocity = self.obstacle_correction([v_left+v_p, v_right+v_p])
-
-        self.motors["left"].velocity = velocity[0]
-        self.motors["right"].velocity = velocity[1]        
+        self.motors["left"].velocity = v_p + v_left
+        self.motors["right"].velocity = v_p + v_right
         return False
 
     def rotate(self):
-        #TODO
-        #print("ON POSITION")
-        #self.behavior = "idle"
+        status = self.sensors["orientation"].read()
+        if status is None:
+            return None
+        current_o = status.ori[2]
+        if current_o < 0:
+            current_o = math.pi + (math.pi + current_o)
+        d_o = (self.delta_orientation + current_o) % 2*math.pi
+
+        v_max_o = 5
+
+        k_o = min([abs(d_o), 2*math.pi-abs(d_o)])/(2*math.pi)
+        v_o = k_o*v_max_o
+        if d_o < -math.pi:
+            v_right = v_o 
+            v_left = -v_o
+        elif d_o < 0:
+            v_right = -v_o 
+            v_left = v_o
+        elif d_o < math.pi:
+            v_right = v_o 
+            v_left = -v_o
+        else:
+            v_right = -v_o 
+            v_left = v_o
+
+        self.motors["left"].velocity = v_left
+        self.motors["right"].velocity = v_right
+        self.behavior="run"
         return True
 
     def goto(self, pos):
         self.destination=pos
+        print(pos)
         #print("Position for " + str(self.name) + " " + str(pos))
         self.behavior="run"
 
@@ -162,10 +187,8 @@ class Pioneer(Robot):
         sleep(0.2)
         return False
 
-
-    def obstacle_correction(self, velocity):
-        # [left, right]
-        vel = velocity
+    @property
+    def obstacle(self):
         readings_good = False
         while not readings_good:
             readings = self.sensor_readings
@@ -173,13 +196,6 @@ class Pioneer(Robot):
             for r in readings:
                 if readings[r] == None:
                     readings_good = False
-
-        #print(readings)
-
-        #interesuja nas czujniki od 1 do 8
-        # frontowe to 4 i 5
-        # prawy to 8
-        # lewy to 1
         distances = [0,0,0,0,0,0,0,0]
         for i in range(8):
             s = "proximity-{nn}".format(nn=i+1)
@@ -190,40 +206,11 @@ class Pioneer(Robot):
             distances[i]=dist
         min_dist = min(distances)
 
-        # if self._name == 2:
-        #     print(distances)
         
-        scary_distance = 0.2
+        
 
-        if min_dist < scary_distance:
-            min_dist_sensor = distances.index(min_dist)
-            #print(self._name, min_dist_sensor)
-            correction = 10*(scary_distance - min_dist)
-            
-            #przeszkoda z lewej, sensor 3 - straszna przeszkoda, sensor 0 - malo wazna
-            if min_dist_sensor <= 3:
-                correction = correction * min_dist_sensor
-                print(correction)
-                vel = [vel[0]+correction,vel[1]-correction]
-
-            #przeszkoda z prawej, sensor 4 - straszna przeszkoda, sensor 7 - malo wazna
-            else:
-                correction = correction * (7 - min_dist_sensor)
-                print(correction)
-                vel = [vel[0]-correction,vel[1]+correction]
+        return min_dist < 0.1
 
 
-        return vel
 
-
-        #print("sdfv")
-    
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
 

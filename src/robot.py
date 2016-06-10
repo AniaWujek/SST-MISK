@@ -45,11 +45,20 @@ def main(name, environment):
         planner.check_mail()
         time.sleep(0.2)
         decide = robot.step()
+        if robot.obstacle:
+            #mamy przeszkode
+            print("obstacle")
+            planner.bug2()
+        else:
+            robot.destination = planner.old_goto
+        if planner.cloud:
+            #mamy chmure
+            print("cloud")
+            planner.cloud()
+
+
         #print("DECISION " + str(robot.name) + " " + str(decide))
         if decide:
-            #nie wiem czy to dobrze, bo to blokujaca funkcja czekajaca na synchro sasiadow
-            #ale w sumie co ma wtedy robot do roboty
-            #planner.neighbors_sync()
             planner.next_step()
         planner.broadcast_info()
 
