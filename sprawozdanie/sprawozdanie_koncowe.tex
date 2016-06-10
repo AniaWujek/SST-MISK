@@ -1,0 +1,181 @@
+% TeX encoding = utf8
+% TeX spellcheck = pl_PL 
+\documentclass[a4paper, 12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage{polski}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{geometry}
+\usepackage{indentfirst}
+\usepackage{subfigure}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+%\renewcommand*{\addcontentsline}[3]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{}}}
+\newgeometry{tmargin=2.5cm, bmargin=2.5cm, lmargin=3.5cm, rmargin=2.5cm}
+%\setcounter{secnumdepth}{2}
+\setlength{\fboxsep}{0pt}
+\lstset{
+	basicstyle=\footnotesize\ttfamily,
+	breaklines=true,
+	language=Python,
+	breakatwhitespace=true,
+	frame=leftline,
+	numbers=left,
+	numberstyle=\tiny,
+	commentstyle=\color{Gray}\footnotesize\ttfamily}
+
+
+\author{Anna Wujek \\ Łukasz Korpal \\ Wiktor Ślęczka}
+\title{Roboty monitorujace skażenie środowiska - symulator V-REP}
+
+
+\begin{document}
+	\sloppy
+	\maketitle
+	\newpage
+	\tableofcontents
+	\newpage
+	\section{Zadanie}
+	Celem projektu było stworzenie symulatora mobilnej sieci ad hoc (MANET) do monitorowania skażenia środowiska naturalnego. Węzłami sieci są roboty mobilne, wyposażone w czujniki oraz komunikujące się między sobą. Zadaniem robotów jest lokalizacja chmury skażenia i otoczenie jej robotami, monitorującymi jej położenie i granice, przy założeniu utrzymania spójności sieci.
+	
+	
+	\section{Projekt systemu}
+	\subsection{Założenia}
+	\begin{itemize}
+		\item Roboty potrafią się na bieżąco lokalizować.
+		\item System składa się z pewnej liczby robotów mobilnych.
+		\item Roboty mobilne działają autonomicznie i potrafią same zorganizować sieć.
+		\item Roboty są wyposażone w czujniki pozwalające im wykrywać poziom skażenia oraz przeszkody.
+		\item Roboty są wyposażone w urządzenia pozwalające im się między sobą komunikować się między sobą.
+		\item Chmura skażenia jest odgórnie określona i niezmienna w trakcie trwania symulacji.
+		\item Nieznana jest mapa przestrzeni roboczej, ale znane są jej granice i kształt - prostokąt.
+	\end{itemize}
+	
+	\subsection{Scenariusz działania}	
+		
+		Algorytm realizowany przez każdego robota:
+		\begin{enumerate}
+		\item Warunek początkowy: roboty znajdują się w dowolnym punkcie przestrzeni na mapie. Z punktu tego musi istnieć droga prowadząca do obszaru poszukiwań.
+		\item Przemieść się do punktu początkowego, zależnego od liczby robotów, wymiarów przestrzeni poszukiwań i zasięgu czujników, zgodnie ze wzorem:		
+		\begin{eqnarray}
+		max_spaces &=& sensor_range \cdot precision_range \\
+		x &=& -length / 2 \\
+		y &=& width / 2 + distances * robot_number + distances / 2
+		\end{eqnarray}
+		\item Wyznacz kolejny punkt docelowy, zgodnie ze wzorem:
+		\begin{eqnarray}
+		fvvdfv&=& vfdknvdk
+		\end{eqnarray}
+		\item Udaj się do punktu docelowego, monitorując skażenie oraz wykrywając przeszkody.
+		\item Jeśli wykryto przeszkodę, omiń ją algorytmem Bug2. Wyznacz następny punkt docelowy, jest aktualny został minięty.
+		\item Jeśli wykryto chmurę skażenia, zatrzymaj się.
+		\item Jeśli cały obszar poszukiwań sprawdzony, to koniec algorytmu; jeśli nie, to przejdź do punktu 3.
+		\end{enumerate}
+		
+	
+	\subsection{Struktura systemu}
+	System prezentowany w projekcie składa się z następujących elementów:
+	\begin{itemize}
+	\item \textbf{symulator przestrzeni roboczej}:
+	
+	odpowiedzialny za wizualizację oraz fizyczne oddziaływania pomiędzy elementami (np. kolizje), a także za wyznaczanie odczytów czujników (oprócz czujników skażenia);
+	
+	\item \textbf{symulator robotów}:
+	
+	odpowiedzialny za wyznaczanie sterowania robotów na podstawie odczytów z czujników, realizujący określone zadanie;
+	
+	\item \textbf{symulator chmury skażenia}:
+	
+	odpowiedzialny za generowanie odczytów czujników skażenia;
+	
+	\item \textbf{komunikacja}:
+	
+	zapewnia przekazywanie informacji pomiędzy poszczególnymi symulatorami.
+	\end{itemize}
+	
+	\subsubsection{Symulator przestrzeni roboczej}
+	
+	
+		
+	
+
+	
+	\clearpage
+	\subsection{Wstępny projekt systemu}	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.9\columnwidth]{img/schemat_sst_1.pdf}
+		\caption{Schemat działania systemu.}
+	\end{figure}
+	Dla robotów, jednostki centralnej oraz chmury stworzone zostaną procesy, które będą się komunikować z symulatorem V-rep:
+	\begin{itemize}
+		\item procesy robotów będą wysyłać sterowania i odbierać odczyty z czujników przeszkód z symulatora V-rep (V-rep będzie symulować rzeczywiste roboty i rzeczywiste środowisko);
+		\item możliwa będzie komunikacja pomiędzy robotami;
+		\item jednostka centralna będzie odbierać od robotów odczyty skażenia;
+		\item stworzony zostanie osobny proces, który będzie symulował chmurę skażenia; proces ten symulował będzie wartości odczytów czujników skażenia i przekazywał informacje o kształcie i położeniu chmury do V-repa.
+	\end{itemize}
+	
+	\section{Realizacja}
+	
+	\subsection{Roboty}
+	Wykorzystywane w realizacji zadania roboty Pionieer p3dx wyposażone w ultradźwiękowe czujniki odległości - będą one zapewnione przez symulator V-Rep. Posiadają one napęd różnicowy, pozwalający na dużą swobodę poruszania się po symulowanej przestrzeni. Są przystosowane do rozbudowy o dodatkowe urządzenia -- dzięki czemu mogły by być łatwo dostosowane do realizacji zadania lokalizacji chmury.
+	Dodatkowo, czujniki stężenia toksycznych substancji będą realizowane w skryptach Pythona, ułatwiając jej symulację. Informacje o jej położeniu i kształcie będą przekazywane do Vrepa, gdzie nastąpi ich wizualizacja.
+	\subsection{Algorytmy}
+	
+	\subsubsection{Algorytm poszukiwania chmury}
+	Roboty rozpoczynają pracę od ustawienia się w formacji linii -- maksymalna odległość między robotami jest określona wzorem:
+	\begin{math}
+	d_{max} = 0.7*min(max(z_1,2*z_2))
+	\end{math}
+	Gdzie:\\
+	$d_{max}$ -- maksymalna odległość między robotami\\
+	$z_1$ -- zasięg urządzeń komunikacyjnych robotów\\
+	$z_2$ -- zasięg czujników odległości\\
+	Roboty w ten sposób zaczynają poruszać się do przodu do momentu dotarcia do przeszkody, toksycznej chmury lub granicy obszaru poszukiwań. W przypadku powyższych wydarzeń, uruchamiane są odpowiednie algorytmy.
+	Gdy roboty dotrą do końca obszaru poszukiwań, zatrzymują się, przesuwają w bok i kontynuują poszukiwania w drugą stronę, granicząc z poprzednim obszarem poszukiwań.
+	\subsubsection{Algorytm bug 2}
+	Algorytm ten będzie stosowany w przypadku napotkania przeszkody przez robota. Polega on na podążaniu wzdłuż ściany przeszkody do momentu osiągnięcia punktu leżącego za napotkaną ścianą, na przedłużeniu początkowej ścieżki ruchu. Jego działanie zostało przedstawione na rysunku \ref{bug2_img}.
+	\begin{figure}[h!]
+		\centering
+		\includegraphics*[width=0.7\columnwidth]{img/40-0.png}
+		\caption{Działanie algorytmu bug 2}
+		\label{bug2_img}
+	\end{figure}
+	W zastosowaniu dla grupy robotów zmodyfikujemy ten algorytm w następujący sposób:
+	Gdy robot/roboty wykryją przeszkodę, oceniane jest jej położenie względem środka szeregu. Większość szeregu powinna poruszać się dalej, natomiast pozostałe roboty powinny zacząć omijać przeszkodę w kierunku większości za pomocą algorytmu bug 2, nie przerywając połączenia z siecią. Jego działanie zaprezentowano na rysunku \ref{omijanie}.
+	\begin{figure}[h!]
+		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/1.png}
+		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/2.png}
+		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/3.png}
+		\includegraphics*[width=0.5\columnwidth]{img/przeszkoda/4.png}
+		\caption{Działanie algorytmu bug 2 dla wielu robotów. Ścianę napotyka jako pierwszy robot 1, robot 2 także ją zauważa. Znajduje się na lewo od środka ciężkości linii, więc roboty z tej strony zaczynają omijać przeszkodę, korzystając z algorytmu bug 2 oraz zachowując spójność sieci.}
+		\label{omijanie}
+	\end{figure}
+	\clearpage
+	\subsubsection{Algorytm otaczania chmury}
+	W momencie napotkania chmury przez któregokolwiek robota, zatrzymuje się on (po osiągnięciu natężenia toksyn określonego programowo). Pozostałe roboty jadą dalej, po łuku -- tak, aby nie przerwać połączenia z siecią. Gdy napotkają określone stężenie chmury, zatrzymują się. Gdy wszystkie roboty zatrzymały się, zwracają się w jedną stronę i zaczynają okrążać chmurę, utrzymując się na granicy stężenia oraz zachowując spójność sieci. Jego działanie przedstawiono na rysunku \ref{otaczanie}.
+	\begin{figure}[h!]
+		\includegraphics*[width=0.5\columnwidth]{img/chmura/1.png}
+		\includegraphics*[width=0.5\columnwidth]{img/chmura/2.png}
+		\includegraphics*[width=0.5\columnwidth]{img/chmura/3.png}
+		\includegraphics*[width=0.5\columnwidth]{img/chmura/4.png}
+		\caption{Działanie algorytmu otaczania chmury. Robot 2 napotyka chmurę, pozostałe roboty zbliżają się do chmury aż do wartości granicznej, następnie cała sieć zaczyna krążyć wokół chmury, monitorując jej kształt i położenie.}
+		\label{otaczanie}
+	\end{figure}
+	\clearpage
+	\subsection{Przykładowe mapy środowiska}
+	\begin{figure}[h!]
+		\centering
+		\subfigure[Mały teren]{\includegraphics[width=0.99\columnwidth]{img/mapa1.png}}
+		\subfigure[Duży teren]{\includegraphics[width=0.99\columnwidth]{img/mapa2.png}}
+		\caption{Przykładowe mapy środowiska}
+	\end{figure}
+\end{document}
+
+
