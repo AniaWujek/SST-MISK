@@ -15,6 +15,7 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{amsmath}
 
 %\renewcommand*{\addcontentsline}[3]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{}}}
 \newgeometry{tmargin=2.5cm, bmargin=2.5cm, lmargin=3.5cm, rmargin=2.5cm}
@@ -187,6 +188,9 @@
 			\caption{Działanie algorytmu otaczania chmury. Robot 2 napotyka chmurę, pozostałe roboty zbliżają się do chmury aż do wartości granicznej, następnie cała sieć zaczyna krążyć wokół chmury, monitorując jej kształt i położenie.}
 			\label{otaczanie}
 		\end{figure}
+		
+		
+		
 	
 	
 	
@@ -259,6 +263,44 @@
 	\subsection{Roboty}
 	Wykorzystywane w realizacji zadania roboty Pionieer p3dx wyposażone w ultradźwiękowe czujniki odległości - będą one zapewnione przez symulator V-Rep. Posiadają one napęd różnicowy, pozwalający na dużą swobodę poruszania się po symulowanej przestrzeni.
 	
+	Roboty te mają napęd różnicowy, co pozwala im na obracanie się w miejscu. Dlatego też realizacja ruchu robota odbywa się poprzez zadanie punktu docelowego, a następnie takie sterowanie, aby dotrzeć do niego z dowolną orientacją. Do sterowania wykorzystane zostały dwa regulatory proporcjonalne, jeden odpowiedzialny za jazdę do przodu -- wolniej lub szybciej, w zależności od odległości od miejsca docelowego, drugi odpowiedzialny za obrót robota -- tak, aby robot był ustawiony przodem do miejsca docelowego. Złożenie tych dwóch ruchów pozwala na płynne i gładkie dojechanie do miejsca docelowego.
+	
+	Regulator odpowiedzialny za jazdę do przodu:
+	
+	\begin{eqnarray}
+	u_{11}(k) &=& u_{12}(k) = K_1 \cdot e(k) \quad \text{jednakowe prędkości na oba koła}\nonumber \\
+	e(k) &=& y_{zad}(k) - y(k) \nonumber \\
+	K_1 &=& v_{max} \nonumber \\
+	0 &\leq& u_{11}(k),u_{12}(k) \leq v_{max} \nonumber
+	\end{eqnarray}
+	gdzie:\\
+	$u_{11}(k),u_{12}(k)$ -- sterowanie, czyli prędkości zadawane na oba koła\\
+	$y_zad()$ -- współrzędne punktu docelowego\\
+	$y(k)$ -- aktualne położenie robota\\
+	$v_{max}$ -- maksymalna prędkość.
+	
+	Regulator odpowiedzialny za obrót robota:
+	\begin{eqnarray}
+	u_{21}(k) &=& -u_{22}(k) = K_2 \cdot e(k) \quad \text{przeciwne prędkości na oba koła}\nonumber \\
+	e(k) &=& \theta(k)\nonumber \\
+	K_2 &=& v_{max2} \nonumber \\
+	0 &\leq& u_{21}(k),u_{22}(k) \leq v_{max2} \nonumber
+	\end{eqnarray}
+	gdzie:\\
+	$u_{21}(k),u_{22}(k)$ -- sterowanie, czyli prędkości zadawane na oba koła\\
+	$\theta()$ -- kąt pomiędzy kierunkiem jazdy robota, a prostą poprowadzoną przez robota i punkt docelowy (0, jeśli robot skierowany przodem do punktu docelowego)\\
+	$v_{max2}$ -- maksymalna prędkość podczas obrotu.
+	
+	Sterowanie wysyłane do robota jest złożeniem tych dwóch ruchów:
+	\begin{displaymath}
+	V(k)=\begin{bmatrix}
+	v_1(k), & v_2(k)
+	\end{bmatrix}=\begin{bmatrix}
+	u_{11}(k)+u_{21}(k), & u_{21}(k)+u_{22}(k)
+	\end{bmatrix}
+	\end{displaymath}
+		
+	
 	Dodatkowo, czujniki stężenia toksycznych substancji będą realizowane w skryptach Pythona, ułatwiając jej symulację. Informacje o jej położeniu i kształcie będą przekazywane do V-Repa, gdzie nastąpi ich wizualizacja.
 	
 	
@@ -281,17 +323,31 @@
 	\end{itemize}
 	
 	\subsection{Realizacja założeń}
+	
+	\subsubsection{Symulacja środowiska i robotów}
 	Udało się stworzyć symulację zawierającą grupę robotów mobilnych. Każdy robot składał się z:
 	\begin{itemize}
-		\item rzeczywistych efektorów i receptorów (realizowanych w V-Repie oraz w symulatorze chmury skażenia w Pythonie);
+		\item symulatora rzeczywistych efektorów i receptorów (realizowanych w V-Repie oraz w symulatorze chmury skażenia w Pythonie);
 		\item wirtualnych efektorów i receptorów (realizowanych w V-Repie oraz w symulatorze robota w Pythonie);
 		\item podsystemu sterowania (realizowanego w symulatorze robota w Pythonie).
 	\end{itemize}
-	Każdy model w V-Repie miał swój unikalny odpowiednik po stronie Pythona, z którym komunikował się na tyle często, by stan logiki robota i wizualizacja w V-Repie nie różniły się między sobą.
+	Każdy model w V-Repie miał swój unikalny odpowiednik po stronie Pythona, z którym komunikował się na tyle często, by stan logiki robota i wizualizacja w V-Repie nie różniły się między sobą.	
+	
+	\subsubsection{Komunikacja}	
 	
 	Dzięki zaimplementowanej komunikacji między wątkami Pythona a V-Repem możliwe było określenie aktualnej pozycji i orientacji robota.
 	
 	Dzięki czujnikom odległości dostępnym w gotowym modelu oraz zamodelowanemu czujnikowi chmury skażenia możliwa była symulacja odczytów, na podstawie których robot podejmował decyzje. Symulacja wiernie odpowiadała rzeczywistości -- robot nie korzystał z żadnych danych, których by nie miał w rzeczywistości.
+	
+	Komunikacja między robotami, zrealizowana w całości po stronie Pythona, zapewniła zachowanie spójności sieci - roboty zawsze miały informację, na jakim etapie poszukiwań znajdują się inne jednostki.
+	
+	\subsubsection{Realizacja zadania poszukiwania chmury}
+	Zaproponowany algorytm przeczesywania zadanego obszaru sprawdził się bardzo dobrze. Przeczesywanie obszaru poszukiwań szerokim pasem robotów jadących w linii daje gwarancję wykrycia chmury (nawet niewielkiej), a jednocześnie nie pozwala na utracenie spójności sieci, ponieważ całą linia robotów czeka na te, które jadą wolniej (podstawą do zachowania spójności jest odpowiednio mała odległość między robotami).	
+	
+	Zaproponowane algorytmy omijania przeszkód sprawdziły się dla prostych i typowych przypadków, takich jak plansza z niewielkimi przeszkodami (tak, aby podczas omijania nie najechał na trasę innej jednostki).
+	
+	Algorytm otaczania chmury został przetestowany dla przypadku chmury nieruchomej okrągłego kształtu i sprawdził się bardzo dobrze.
+	
 	
 	
 	
