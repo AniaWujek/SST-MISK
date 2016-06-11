@@ -85,7 +85,7 @@
 		\begin{figure}[h!]
 			\centering
 			\includegraphics*[width=0.7\columnwidth]{img/odleglosci.pdf}
-			\caption{Sposób ustawienia robotów w szeregu}
+			\caption{Sposób ustawienia robotów w szeregu. D - distance, P - zależne od precision\_range}
 			\label{odleglosci}
 		\end{figure}
 		\item Wyznacz kolejny punkt docelowy, zgodnie ze wzorem:
@@ -169,8 +169,8 @@
 		
 		Gdy roboty dotrą do końca obszaru poszukiwań, zatrzymują się, przesuwają w bok i kontynuują poszukiwania w drugą stronę, granicząc z poprzednim obszarem poszukiwań -- w ten sposób szerokimi pasami przeszukują cały obszar mapy.
 		
-		\subsubsection{Algorytm bug 2}
-		Algorytm ten jest stosowany w przypadku napotkania przeszkody przez robota. Polega on na podążaniu wzdłuż ściany przeszkody do momentu osiągnięcia punktu leżącego za napotkaną ścianą, na przedłużeniu początkowej ścieżki ruchu. Jego działanie zostało przedstawione na rysunku \ref{bug2_img}.
+		\subsubsection{Zmodyfikowany algorytm bug 2}
+		Algorytm ten jest stosowany w przypadku napotkania przeszkody przez robota. Polega on na podążaniu wzdłuż ściany przeszkody do momentu osiągnięcia punktu leżącego za napotkaną ścianą. Jedyną modyfikację stanowi oderwanie się od ścieżki w momencie, gdy na drodze do celu nie stoi żadna przeszkoda.  Działanie oryginalnego algorytmu zostało przedstawione na rysunku \ref{bug2_img}.
 		\begin{figure}[h!]
 			\centering
 			\includegraphics*[width=0.7\columnwidth]{img/40-0.png}
@@ -179,13 +179,11 @@
 		\end{figure}
 
 		\subsubsection{Algorytm otaczania chmury}
-		W momencie napotkania chmury przez któregokolwiek robota, zatrzymuje się on (po osiągnięciu natężenia toksyn określonego arbitralnie). Pozostałe roboty jadą dalej, po łuku -- tak, aby nie przerwać połączenia z siecią. Gdy napotkają określone stężenie chmury, zatrzymują się. Gdy wszystkie roboty zatrzymały się, zwracają się w jedną stronę i zaczynają okrążać chmurę, utrzymując się na granicy stężenia oraz zachowując spójność sieci. Jego działanie przedstawiono na rysunku \ref{otaczanie}.
+		W momencie napotkania chmury przez któregokolwiek robota, zatrzymuje się on (po osiągnięciu natężenia toksyn określonego arbitralnie). Pozostałe roboty jadą dalej i po pewnym czasie skręcają do domniemanego środka chmury. Gdy w trakcie trwania tych operacji napotkają określone stężenie chmury, zatrzymują się.
 		\begin{figure}[h!]
 			\includegraphics*[width=0.5\columnwidth]{img/chmura/1.png}
 			\includegraphics*[width=0.5\columnwidth]{img/chmura/2.png}
-			\includegraphics*[width=0.5\columnwidth]{img/chmura/3.png}
-			\includegraphics*[width=0.5\columnwidth]{img/chmura/4.png}
-			\caption{Działanie algorytmu otaczania chmury. Robot 2 napotyka chmurę, pozostałe roboty zbliżają się do chmury aż do wartości granicznej, następnie cała sieć zaczyna krążyć wokół chmury, monitorując jej kształt i położenie.}
+			\caption{Działanie algorytmu otaczania chmury. Robot 2 napotyka chmurę, pozostałe roboty zbliżają się do chmury aż do wartości granicznej, następnie cała sieć zatrzymuje się.}
 			\label{otaczanie}
 		\end{figure}
 		
@@ -348,8 +346,25 @@
 	
 	Algorytm otaczania chmury został przetestowany dla przypadku chmury nieruchomej okrągłego kształtu i sprawdził się bardzo dobrze.
 	
-	
-	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics*[width=0.7\columnwidth]{img/rzad_screen.png}
+		\caption{Poruszanie się robotów w rzędzie}
+		\label{rzad}
+	\end{figure}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics*[width=0.7\columnwidth]{img/omijanie_1_screen.png}
+		\caption{Omijanie przeszkody}
+		\label{omijanie}
+	\end{figure}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics*[width=0.7\columnwidth]{img/otaczanie_screen.png}
+		\caption{Otaczanie chmury}
+		\label{otaczanie_screen}
+	\end{figure}
+
 	
 	
 \end{document}
