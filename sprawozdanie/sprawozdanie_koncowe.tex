@@ -131,22 +131,19 @@
 	Każdy robot realizuje dokładnie ten sam algorytm - nie ma jednego wyróżnionego lidera.
 	
 	\subsubsection{Komunikacja}
-	Aby cały system działał poprawnie, poszczególne elementy muszą móc się ze sobą komunikować. W systemie rozróżniamy następujące kanały komunikacyjne i przesyłane informacje:
+	Aby cały system działał poprawnie, poszczególne elementy muszą mieć możliwość komunikacji między sobą. W systemie rozróżniamy następujące kanały komunikacyjne i przesyłane informacje:
 	\begin{itemize}
-	\item Symulator przestrzeni roboczej $\rightarrow$ Symulator robota:
-		\begin{itemize}
-		\item odczyty z czujników (oprócz czujnika skażenia)
-		\item pozycja robota (położenie + orientacja)	
-		\end{itemize}
-	\item Symulator robota $\rightarrow$ Symulator przestrzeni roboczej:
+	\item Symulator robota $\leftrightarrow$ Symulator przestrzeni roboczej:
 		\begin{itemize}
 		\item sterowanie poszczególnymi silnikami
+		\item odczyty z czujników (oprócz czujnika skażenia)
+		\item sprawdzenie pozycji robota (położenie + orientacja)
 		\end{itemize}
-	\item Symulator chmury skażenia $\rightarrow$ Symulator robota:
+	\item Symulator robota $\leftrightarrow$ Symulator chmury skażenia :
 		\begin{itemize}
 		\item odczyt czujnika skażenia
 		\end{itemize}
-	\item Symulator robota $\rightarrow$ Symulator robota:
+	\item Symulator robota $\leftrightarrow$ Symulator robota:
 		\begin{itemize}
 		\item ostatni punkt docelowy, do którego udało się dotrzeć
 		\item informacja o wykrytej chmurze skażenia
@@ -224,9 +221,9 @@
 	\subsubsection{Roboty}
 	Roboty wysyłają informacje o swoim postępie w wiadomościach typu "progress". Zawierają one następujące elementy:
 	\begin{itemize}
-	\item "robot" - numer identyfikacyjny robota
-	\item "substage" - postęp robota wzdłuż wyznaczonej ścieżki
-	\item "stage" - postęp robota w numerze ścieżki
+	\item ''robot'' - numer identyfikacyjny robota
+	\item ''substage'' - postęp robota wzdłuż wyznaczonej ścieżki
+	\item ''stage''- postęp robota w numerze ścieżki
 	\end{itemize}
 	Poniżej przedstawiono przykład tworzenia wiadomości o postępie robota.
 	\begin{verbatim}
@@ -244,9 +241,9 @@
 	Skrypt odpowiadający za symulację chmury wysyła informację o jej położeniu do robotów w wiadomościach typu "cloudread".
 	Zawierają one następujące elementy:
 	\begin{itemize}
-	\item "concentration" - stężenie toksycznych substancji
-	\item "robot" - numer robota, z którym przebiega komunikacja
-	\item "position" - pozycja robota
+	\item ''concentration'' - stężenie toksycznych substancji
+	\item ''robot'' - numer robota, z którym przebiega komunikacja
+	\item ''position'' - pozycja robota
 	\end{itemize}
 	Poniżej przedstawiono przykład tworzenia wiadomości o chmurze.
 	\begin{verbatim}
@@ -316,7 +313,7 @@
 	Oprogramowanie poza V-Repem było tworzone przy wykorzystaniu języka Python. Rozwiązanie to miało wiele zalet:
 	\begin{itemize}
 		\item tworzenie części systemu poza V-Repem umożliwiło skorzystanie z wielu bibliotek Pythona;
-		\item każdy robot działał w osobnym wątku (podobnie chmura skażenia), dzięki czemu symulacja była bardziej zbliżona do rzeczywistości;
+		\item każdy robot działał w osobnym procesie (podobnie chmura skażenia), dzięki czemu symulacja była bardziej zbliżona do rzeczywistości;
 		\item wadą rozwiązania była konieczność komunikacji z V-Repem, która wprowadzała opóźnienia, częstotliwość odświeżania stanu robotów oraz symulacji w V-Repie się różniła, a komunikacja nie zawsze działała zgodnie z oczekiwaniami (np. w pewnym momencie pytając V-Repa o pozycję robota otrzymywaliśmy w odpowiedzi pozycję kamery).
 	\end{itemize}
 	
